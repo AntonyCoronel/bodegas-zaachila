@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bodega Segura Zaachila</title>
+    <style>
+        :root { --blue: #1460f4; --orange: #ff5b00; --white: #ffffff; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { min-height: 100vh; color: #16243a; font-family: Arial, Helvetica, sans-serif; padding-top: 88px; }
+        .top { position: fixed; top: 0; left: 0; z-index: 10; width: 100%; height: 88px; background: var(--white); box-shadow: 0 2px 12px rgba(15, 30, 50, .12); overflow-x: auto; }
+        .menu { width: min(100% - 64px, 1000px); min-width: 850px; height: 88px; margin: 0 auto; border-collapse: separate; border-spacing: 10px 0; }
+        .menu td { vertical-align: middle; }
+        .menu td:not(:first-child) { text-align: center; }
+        .menu h4 { color: #16243a; font-size: 14px; white-space: nowrap; }
+        .menu a { color: #16243a; text-decoration: none; }
+        .menu a:hover, .menu a:focus-visible { color: var(--blue); }
+        .logo { width: 130px; height: 72px; object-fit: contain; }
+        .contacto, .gmail {
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            border: 0; border-radius: 6px; color: var(--white); cursor: pointer;
+            font-size: 14px; font-weight: 700; padding: 12px 16px; text-decoration: none;
+        }
+        .contacto { background-color: var(--blue); }
+        .gmail { background-color: #d14836; }
+        .contacto:hover, .contacto:focus-visible { background-color: #084dcc; }
+        .gmail:hover, .gmail:focus-visible { background-color: #b63828; }
+        .contacto img, .gmail img { width: 18px; height: 18px; object-fit: contain; }
+        .hero {
+            position: relative;
+            min-height: calc(100vh - 88px);
+            overflow: hidden;
+            background: linear-gradient(90deg, rgba(4, 20, 49, .86), rgba(4, 20, 49, .52) 42%, rgba(4, 20, 49, .18)), url("imagenes/img3.jpeg") center / cover;
+        }
+        .contenido {
+            display: flex;
+            align-items: center;
+            min-height: calc(100vh - 88px);
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 96px 32px 120px;
+        }
+        .texto { max-width: 690px; color: var(--white); }
+        .texto h1 { font-size: clamp(44px, 6vw, 82px); line-height: .98; letter-spacing: -2px; margin-bottom: 28px; }
+        .descripcion { max-width: 650px; color: rgba(255, 255, 255, .9); font-size: clamp(18px, 2vw, 24px); line-height: 1.4; margin-bottom: 32px; }
+        .acciones { display: flex; flex-wrap: wrap; gap: 16px; }
+        .accion {
+            display: inline-flex; align-items: center; justify-content: center; min-width: 190px;
+            border: 1px solid transparent; border-radius: 6px; color: var(--white);
+            font-size: 16px; font-weight: 700; padding: 17px 24px; text-decoration: none;
+        }
+        .accion-primaria { background: var(--blue); }
+        .accion-secundaria { border-color: rgba(255, 255, 255, .45); background: rgba(255, 255, 255, .16); }
+        .accion:hover, .accion:focus-visible { transform: translateY(-2px); }
+        .promocion { min-height: calc(100vh - 88px); background: var(--orange); padding: 0 32px 28px; text-align: center; }
+        .promocion h1 { color: var(--white); font-size: clamp(40px, 5vw, 64px); line-height: 1.05; padding-top: 0; margin-bottom: 10px; }
+        .promocion > p { color: var(--white); font-size: 19px; margin-bottom: 42px; }
+        .tarjetas { display: grid; grid-template-columns: repeat(2, minmax(0, 423px)); justify-content: center; gap: 28px; }
+        .tarjeta { position: relative; min-height: 538px; overflow: hidden; border-radius: 15px; background: #172b46; text-align: left; }
+        .tarjeta::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 30%, rgba(0, 0, 0, .72)); }
+        .tarjeta img { width: 100%; height: 100%; min-height: 538px; object-fit: cover; }
+        .tarjeta-contenido { position: absolute; right: 26px; bottom: 36px; left: 26px; z-index: 1; color: var(--white); }
+        .tarjeta-contenido h2 { font-size: 31px; line-height: 1.08; margin-bottom: 12px; }
+        .tarjeta-contenido p { font-size: 19px; line-height: 1.25; }
+        .etiqueta { display: inline-block; margin-bottom: 18px; padding: 8px 16px; background: var(--white); color: #10304d; font-size: 22px; font-weight: 700; }
+        .boton-naranja { display: inline-block; margin-top: 24px; padding: 10px 18px; border-radius: 4px; background: var(--orange); color: var(--white); font-size: 22px; font-weight: 700; text-decoration: none; }
+        .beneficios { background: #f7f8fa; padding: 0 32px 72px; color: #111820; text-align: center; }
+        .beneficios h2 { font-size: clamp(38px, 5vw, 52px); line-height: 1.05; margin-bottom: 12px; }
+        .beneficios-intro { max-width: 680px; margin: 0 auto 56px; color: #4b5a70; font-size: 19px; line-height: 1.4; }
+        .beneficios-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 26px; max-width: 1000px; margin: 0 auto; }
+        .beneficio { min-height: 245px; padding: 28px; border: 1px solid #e5e7eb; border-radius: 14px; background: var(--white); box-shadow: 0 2px 4px rgba(17, 24, 39, .06); text-align: left; }
+        .beneficio-icono { display: grid; place-items: center; width: 50px; height: 50px; margin-bottom: 18px; border-radius: 10px; background: #dceaff; color: var(--blue); font-size: 28px; font-weight: 700; }
+        .beneficio h3 { margin-bottom: 14px; font-size: 18px; }
+        .beneficio p { color: #4b5a70; font-size: 15px; line-height: 1.45; }
+        .tamanos-seccion { background: var(--white); padding: 72px 32px 80px; color: #16243a; }
+        .tamanos-titulo { max-width: 1000px; margin: 0 auto 42px; text-align: center; }
+        .tamanos-titulo h2 { color: #111820; font-size: clamp(38px, 5vw, 52px); margin-bottom: 12px; }
+        .tamanos-titulo p { color: #4b5a70; font-size: 19px; }
+        .tamanos-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; max-width: 1000px; margin: 0 auto; }
+        .tamano { min-height: 355px; padding: 24px 22px; border: 1px solid #edf0f4; border-radius: 14px; background: #f8f9fb; }
+        .tamano.destacado { border: 4px solid #9cc1ff; background: var(--blue); color: var(--white); transform: translateY(-8px); }
+        .tamano h3 { color: var(--blue); font-size: 44px; text-align: center; margin-bottom: 20px; }
+        .tamano.destacado h3 { color: var(--white); }
+        .popular { display: block; width: max-content; margin: 0 auto 12px; padding: 4px 14px; border-radius: 20px; background: var(--white); color: var(--blue); font-size: 13px; font-weight: 700; }
+        .tamano-descripcion { min-height: 48px; color: #111820; font-size: 14px; line-height: 1.35; }
+        .tamano.destacado .tamano-descripcion { color: var(--white); }
+        .tamano hr { margin: 14px 0; border: 0; border-top: 1px solid #dfe3e9; }
+        .tamano.destacado hr { border-color: rgba(255, 255, 255, .25); }
+        .tamano ul { min-height: 94px; padding: 0; list-style: none; }
+        .tamano li { margin: 11px 0; color: #4b5a70; font-size: 14px; }
+        .tamano li::before { content: "✓"; margin-right: 10px; color: var(--blue); font-weight: 700; }
+        .tamano.destacado li { color: var(--white); }
+        .tamano.destacado li::before { color: var(--white); }
+        .cotizar-tamano { display: block; width: 100%; margin-top: 16px; padding: 13px 10px; border-radius: 9px; background: var(--blue); color: var(--white); font-size: 15px; font-weight: 700; text-align: center; text-decoration: none; }
+        .tamano.destacado .cotizar-tamano { background: transparent; }
+        .ubicacion-seccion { background: #f7f8fa; padding: 72px 32px 80px; color: #16243a; }
+        .ubicacion-titulo { margin-bottom: 56px; text-align: center; }
+        .ubicacion-titulo h2 { color: #111820; font-size: clamp(38px, 5vw, 52px); margin-bottom: 12px; }
+        .ubicacion-titulo p { color: #4b5a70; font-size: 19px; }
+        .ubicacion-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: 44px; max-width: 1000px; margin: 0 auto; }
+        .mapa { width: 100%; height: 470px; border: 0; border-radius: 14px; box-shadow: 0 2px 8px rgba(17, 24, 39, .12); }
+        .ubicacion-info { display: grid; gap: 20px; }
+        .direccion { padding: 30px; border: 1px solid #e5e7eb; border-radius: 14px; background: var(--white); box-shadow: 0 2px 5px rgba(17, 24, 39, .06); }
+        .direccion h3 { margin-bottom: 10px; font-size: 21px; }
+        .direccion p { color: #4b5a70; line-height: 1.5; }
+        .direccion hr { margin: 24px 0; border: 0; border-top: 1px solid #e5e7eb; }
+        .direccion strong { display: block; margin-bottom: 12px; }
+        .direccion ul { padding: 0; list-style: none; }
+        .direccion li { margin: 10px 0; color: #4b5a70; }
+        .direccion li::before { content: "📍"; margin-right: 9px; }
+        .horarios { padding: 28px; border-radius: 14px; background: var(--blue); color: var(--white); }
+        .horarios h3 { margin-bottom: 22px; font-size: 21px; }
+        .horario { display: flex; justify-content: space-between; gap: 20px; margin: 13px 0; font-size: 15px; }
+        .horarios hr { margin: 24px 0; border: 0; border-top: 1px solid rgba(255, 255, 255, .3); }
+        .horarios small { font-size: 13px; }
+        .contacto-seccion { background: var(--white); padding: 72px 32px 80px; color: #16243a; }
+        .contacto-titulo { margin-bottom: 56px; text-align: center; }
+        .contacto-titulo h2 { color: #111820; font-size: clamp(38px, 5vw, 52px); margin-bottom: 12px; }
+        .contacto-titulo p { max-width: 620px; margin: 0 auto; color: #4b5a70; font-size: 19px; line-height: 1.35; }
+        .contacto-grid { display: grid; grid-template-columns: 280px minmax(0, 590px); align-items: start; justify-content: center; gap: 30px; max-width: 1000px; margin: 0 auto; }
+        .contacto-datos { display: grid; gap: 20px; }
+        .dato { padding: 22px; border-radius: 14px; background: #f7f8fa; }
+        .dato-icono { display: grid; place-items: center; width: 44px; height: 44px; margin-bottom: 16px; border-radius: 9px; background: #dceaff; color: var(--blue); font-size: 23px; }
+        .dato.whatsapp .dato-icono { background: #d9fae8; color: #00a94f; }
+        .dato h3 { margin-bottom: 10px; color: #111820; }
+        .dato p { margin-bottom: 9px; color: #4b5a70; font-size: 15px; line-height: 1.5; }
+        .dato a { color: var(--blue); font-weight: 700; text-decoration: none; }
+        .dato.whatsapp a { color: #a00000; }
+        .formulario { padding: 30px; border-radius: 14px; background: #f7f8fa; }
+        .formulario h2 { margin-bottom: 24px; color: #111820; font-size: 23px; }
+        .campos { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .campo { display: flex; flex-direction: column; gap: 8px; }
+        .campo-completo { grid-column: 1 / -1; }
+        .campo label { color: #111820; font-size: 13px; font-weight: 700; }
+        .campo input, .campo select, .campo textarea { width: 100%; border: 1px solid #d5dbe3; border-radius: 9px; background: var(--white); color: #16243a; font: inherit; padding: 12px 14px; }
+        .campo textarea { min-height: 110px; resize: vertical; }
+        .enviar-gmail { width: 100%; margin-top: 26px; padding: 15px; border: 0; border-radius: 9px; background: #a00000; color: var(--white); cursor: pointer; font-size: 15px; font-weight: 700; }
+        .nota-formulario { margin-top: 16px; color: #4b5a70; font-size: 12px; }
+        footer { background: #101b2d; color: #b7c0cf; padding: 44px 32px 24px; }
+        .footer-grid { display: grid; grid-template-columns: 1.2fr 1fr 1fr 1fr; gap: 34px; max-width: 1000px; margin: 0 auto; }
+        footer img { width: 130px; height: 72px; object-fit: contain; background: var(--white); }
+        footer h3 { margin-bottom: 16px; color: var(--white); font-size: 15px; }
+        footer p, footer a { display: block; margin: 9px 0; color: #b7c0cf; font-size: 14px; line-height: 1.45; text-decoration: none; }
+        .copyright { max-width: 1000px; margin: 40px auto 0; padding-top: 22px; border-top: 1px solid rgba(255, 255, 255, .1); font-size: 13px; }
+        @media (max-width: 800px) {
+            body { padding-top: 76px; }
+            .top, .menu { height: 76px; }
+            .menu { width: 100%; margin: 0; border-spacing: 6px 0; }
+            .logo { width: 110px; height: 62px; }
+            .promocion { min-height: calc(100vh - 76px); padding: 0 20px 24px; }
+            .promocion > p { margin-bottom: 26px; }
+            .tarjetas { grid-template-columns: minmax(0, 423px); }
+            .contenido { min-height: calc(100vh - 76px); padding: 60px 20px 100px; }
+            .texto h1 { letter-spacing: -1px; }
+            .beneficios { padding: 0 20px 48px; }
+            .beneficios-grid { grid-template-columns: 1fr; max-width: 423px; }
+            .beneficios-intro { margin-bottom: 32px; }
+            .tamanos-seccion { padding: 48px 20px 56px; }
+            .tamanos-grid { grid-template-columns: 1fr; max-width: 423px; }
+            .tamano.destacado { transform: none; }
+            .ubicacion-seccion { padding: 48px 20px 56px; }
+            .ubicacion-grid { grid-template-columns: 1fr; gap: 24px; max-width: 423px; }
+            .mapa { height: 360px; }
+            .contacto-seccion { padding: 48px 20px 56px; }
+            .contacto-grid { grid-template-columns: 1fr; max-width: 423px; }
+            .campos { grid-template-columns: 1fr; gap: 16px; }
+            .campo-completo { grid-column: auto; }
+            .formulario { padding: 24px; }
+            .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px 20px; }
+        }
+        @media (max-width: 480px) {
+            .contacto, .gmail { padding: 10px 12px; }
+            .promocion h1 { font-size: 38px; }
+            .tarjeta, .tarjeta img { min-height: 450px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="top">
+            <table class="menu">
+                <tr>
+                    <td><a href="#inicio"><img class="logo" src="imagenes/logo.jpeg" alt="Logo de Bodega Segura Zaachila"></a></td>
+                    <td><h4><a href="caracteristicas/caracteristicas.html">Características</a></h4></td>
+                    <td><h4><a href="proyecto/tamanos.html">Tamaños</a></h4></td>
+                    <td><h4><a href="proyecto/ubicacion.html">Ubicación</a></h4></td>
+                    <td><h4><a href="proyecto/contacto.html">Contacto</a></h4></td>
+                    <td><a href="tel:+529514616417" class="contacto"><img src="imagenes/telefono Background Removed.png" alt="" aria-hidden="true"> +52 951 461 6417</a></td>
+                    <td><a href="mailto:bodegasegurazaachila@gmail.com" class="gmail"><img src="imagenes/gmail Background Removed.png" alt="" aria-hidden="true"> Gmail</a></td>
+                </tr>
+            </table>
+    </header>
+    <section class="hero" id="caracteristicas">
+        <div class="contenido">
+            <div class="texto">
+                <h1>El único almacenamiento seguro en todo Zaachila</h1>
+                <p class="descripcion">Bodegas sin cláusulas de permanencia. Contratos mensuales con vigilancia 24/7, cámaras y acceso controlado.</p>
+                <div class="acciones">
+                    <a class="accion accion-primaria" href="tel:+529514616417">Cotiza ahora &nbsp;☎</a>
+                    <a class="accion accion-secundaria" href="#tamanos">Ver tamaños disponibles</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <main class="promocion" id="inicio">
+        <h1>¡Reserva Tu Bodega Hoy!</h1>
+        <p>Máxima seguridad, espacios limpios y vigilancia 24/7</p>
+        <div class="tarjetas">
+            <article class="tarjeta" id="ubicacion">
+                <img src="imagenes/img1.jpeg" alt="Espacio seguro para guardar tus objetos">
+                <div class="tarjeta-contenido">
+                    <span class="etiqueta">Un espacio seguro para tus objetos.</span>
+                    <h2>RESERVA TU BODEGA</h2>
+                    <p>Máxima seguridad, espacios limpios y vigilancia 24/7</p>
+                    <a class="boton-naranja" href="mailto:bodegasegurazaachila@gmail.com">¡Escríbenos!</a>
+                </div>
+            </article>
+            <article class="tarjeta" id="reserva">
+                <img src="imagenes/img2.jpeg" alt="Bodega con almacenamiento seguro">
+                <div class="tarjeta-contenido">
+                    <span class="etiqueta">Almacena con seguridad.</span>
+                    <h2>Tu solución de bodega en Zaachila.</h2>
+                    <p>Sin cláusulas de permanencia.</p>
+                    <a class="boton-naranja" href="tel:+529514616417">¡Escríbenos!</a>
+                </div>
+            </article>
+        </div>
+    </main>
+    <section class="beneficios" id="beneficios">
+        <h2>¿Por Qué Elegir Bodega Segura?</h2>
+        <p class="beneficios-intro">Protección y manejo profesional de bienes. Espacios seguros, organizados y administrados para guardar tus pertenencias o mercancías en Zaachila.</p>
+        <div class="beneficios-grid">
+            <article class="beneficio">
+                <div class="beneficio-icono" aria-hidden="true">◇</div>
+                <h3>Almacenamiento Flexible</h3>
+                <p>Mini bodegas sin cláusulas de permanencia con el espacio exacto que necesitas. Contratos mensuales.</p>
+            </article>
+            <article class="beneficio">
+                <div class="beneficio-icono" aria-hidden="true">♢</div>
+                <h3>Máxima Seguridad</h3>
+                <p>Vigilancia permanente las 24 horas, cámaras de seguridad y acceso controlado para tu tranquilidad.</p>
+            </article>
+            <article class="beneficio">
+                <div class="beneficio-icono" aria-hidden="true">▣</div>
+                <h3>Cámaras y Control</h3>
+                <p>Circuito cerrado de TV en todas las áreas comunes y sistema de acceso controlado.</p>
+            </article>
+            <article class="beneficio">
+                <div class="beneficio-icono" aria-hidden="true">▱</div>
+                <h3>Servicio de Mudanzas</h3>
+                <p>Ofrecemos servicio completo de mudanzas para facilitar el traslado de tus pertenencias.</p>
+            </article>
+            <article class="beneficio">
+                <div class="beneficio-icono" aria-hidden="true">◷</div>
+                <h3>Entrega Inmediata</h3>
+                <p>Dispón de tu espacio de inmediato. Sin esperas ni trámites complicados.</p>
+            </article>
+            <article class="beneficio">
+                <div class="beneficio-icono" aria-hidden="true">⌁</div>
+                <h3>Embalaje Profesional</h3>
+                <p>Preparación y protección de objetos mediante materiales adecuados para almacenamiento o traslado.</p>
+            </article>
+        </div>
+    </section>
+    <section class="tamanos-seccion" id="tamanos">
+        <div class="tamanos-titulo">
+            <h2>Tamaños disponibles</h2>
+            <p>Elige el espacio ideal para guardar tus pertenencias.</p>
+        </div>
+        <div class="tamanos-grid">
+            <article class="tamano">
+                <h3>3m³</h3>
+                <p class="tamano-descripcion">Cajas pequeñas, documentos y artículos personales.</p>
+                <hr>
+                <ul><li>Ideal para archivos y documentos</li><li>Almacenamiento temporal</li><li>Espacio compacto y seguro</li></ul>
+                <a class="cotizar-tamano" href="tel:+529514616417">☎ &nbsp; Cotizar ahora</a>
+            </article>
+            <article class="tamano">
+                <h3>6m³</h3>
+                <p class="tamano-descripcion">Muebles pequeños, cajas medianas y equipos.</p>
+                <hr>
+                <ul><li>Almacenamiento de objetos personales</li><li>Inventario pequeño de negocio</li><li>Equipos y herramientas</li></ul>
+                <a class="cotizar-tamano" href="tel:+529514616417">☎ &nbsp; Cotizar ahora</a>
+            </article>
+            <article class="tamano destacado">
+                <span class="popular">MÁS POPULAR</span>
+                <h3>7m³</h3>
+                <p class="tamano-descripcion">Contenido de habitación e inventario mediano.</p>
+                <hr>
+                <ul><li>Muebles de una habitación</li><li>Inventario comercial</li><li>Electrodomésticos pequeños</li></ul>
+                <a class="cotizar-tamano" href="tel:+529514616417">☎ &nbsp; Cotizar ahora</a>
+            </article>
+            <article class="tamano">
+                <h3>11m³</h3>
+                <p class="tamano-descripcion">Contenido de apartamento pequeño o inventario.</p>
+                <hr>
+                <ul><li>Almacenamiento de muebles</li><li>Inventario de negocio mediano</li><li>Mudanzas parciales</li></ul>
+                <a class="cotizar-tamano" href="tel:+529514616417">☎ &nbsp; Cotizar ahora</a>
+            </article>
+            <article class="tamano">
+                <h3>12m³</h3>
+                <p class="tamano-descripcion">Apartamento o inventario comercial grande.</p>
+                <hr>
+                <ul><li>Contenido de apartamento completo</li><li>Inventario comercial amplio</li><li>Equipos de oficina</li></ul>
+                <a class="cotizar-tamano" href="tel:+529514616417">☎ &nbsp; Cotizar ahora</a>
+            </article>
+            <article class="tamano">
+                <h3>13m³</h3>
+                <p class="tamano-descripcion">Casa pequeña o bodega comercial.</p>
+                <hr>
+                <ul><li>Mudanzas completas</li><li>Almacenamiento empresarial</li><li>Múltiples espacios combinados</li></ul>
+                <a class="cotizar-tamano" href="tel:+529514616417">☎ &nbsp; Cotizar ahora</a>
+            </article>
+        </div>
+    </section>
+    <section class="ubicacion-seccion" id="ubicacion">
+        <div class="ubicacion-titulo">
+            <h2>Ubicación Privilegiada</h2>
+            <p>Ubicados en Zaachila, con fácil acceso desde las principales vías.</p>
+        </div>
+        <div class="ubicacion-grid">
+            <iframe class="mapa" title="Mapa de ubicación en Villa de Zaachila" src="https://www.google.com/maps?q=Villa+de+Zaachila,+Oaxaca&output=embed" loading="lazy"></iframe>
+            <div class="ubicacion-info">
+                <article class="direccion">
+                    <h3>Dirección</h3>
+                    <p>Villa de Zaachila, Oaxaca, México.</p>
+                    <hr>
+                    <strong>Características de ubicación:</strong>
+                    <ul>
+                        <li>Fácil acceso desde las principales vías</li>
+                        <li>Zona segura y tranquila</li>
+                        <li>Cerca de vías de acceso</li>
+                        <li>Excelente conectividad con la ciudad</li>
+                    </ul>
+                </article>
+                <article class="horarios">
+                    <h3>Horarios de Atención</h3>
+                    <p class="horario"><span>Lunes a Viernes:</span><strong>7:00 AM - 8:00 PM</strong></p>
+                    <p class="horario"><span>Sábados:</span><strong>8:00 AM - 6:00 PM</strong></p>
+                    <p class="horario"><span>Domingos:</span><strong>9:00 AM - 5:00 PM</strong></p>
+                    <hr>
+                    <small>*Acceso a las bodegas disponible 24/7 con tu código personal.</small>
+                </article>
+            </div>
+        </div>
+    </section>
+    <section class="contacto-seccion" id="contacto">
+        <div class="contacto-titulo">
+            <h2>Contáctanos</h2>
+            <p>Estamos listos para ayudarte a encontrar la solución perfecta de almacenamiento.</p>
+        </div>
+        <div class="contacto-grid">
+            <div class="contacto-datos">
+                <article class="dato">
+                    <div class="dato-icono" aria-hidden="true">☎</div>
+                    <h3>Teléfono</h3>
+                    <p>Llámanos de lunes a domingo</p>
+                    <a href="tel:+529514616417">+52 951 461 6417</a>
+                </article>
+                <article class="dato whatsapp">
+                    <div class="dato-icono" aria-hidden="true">◯</div>
+                    <h3>WhatsApp</h3>
+                    <p>Chatea con nosotros</p>
+                    <a href="mailto:bodegasegurazaachila@gmail.com">Abrir Gmail</a>
+                </article>
+            </div>
+            <form class="formulario" action="mailto:bodegasegurazaachila@gmail.com" method="post" enctype="text/plain">
+                <h2>Solicita una Cotización</h2>
+                <div class="campos">
+                    <div class="campo"><label for="nombre">Nombre Completo *</label><input id="nombre" name="nombre" type="text" placeholder="Juan Pérez" required></div>
+                    <div class="campo"><label for="telefono">Teléfono *</label><input id="telefono" name="telefono" type="tel" placeholder="+52 951 461 6417" required></div>
+                    <div class="campo"><label for="correo">Email *</label><input id="correo" name="correo" type="email" placeholder="correo@ejemplo.com" required></div>
+                    <div class="campo"><label for="tamano">Tamaño requerido</label><select id="tamano" name="tamano"><option value="">Selecciona un tamaño</option><option>3m³</option><option>6m³</option><option>7m³</option><option>11m³</option><option>12m³</option><option>13m³</option></select></div>
+                    <div class="campo campo-completo"><label for="mensaje">Mensaje</label><textarea id="mensaje" name="mensaje" placeholder="Cuéntanos sobre tus necesidades de almacenamiento..."></textarea></div>
+                </div>
+                <button class="enviar-gmail" type="submit">✉ &nbsp; Enviar por Gmail</button>
+                <p class="nota-formulario">* Al enviar este formulario, serás redirigido a Gmail para completar tu solicitud.</p>
+            </form>
+        </div>
+    </section>
+    <footer>
+        <div class="footer-grid">
+            <div><img src="imagenes/logo.jpeg" alt="Bodega Segura Zaachila"><p>Soluciones de almacenamiento seguras y accesibles en Zaachila.</p></div>
+            <div><h3>Navegación</h3><a href="#caracteristicas">Características</a><a href="#tamanos">Tamaños y precios</a><a href="#ubicacion">Ubicación</a><a href="#contacto">Contacto</a></div>
+            <div><h3>Servicios</h3><p>📦 Bodegas</p><p>🚚 Servicio de Mudanzas</p><p>🔐 Almacenamiento Seguro</p><p>👁 Vigilancia 24/7</p></div>
+            <div><h3>Contacto</h3><p>📍 Villa de Zaachila, Oaxaca</p><p>📞 +52 951 461 6417</p><p>✉ Gmail</p></div>
+        </div>
+        <p class="copyright">© 2026 Bodegas Seguras Zaachila. Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html>

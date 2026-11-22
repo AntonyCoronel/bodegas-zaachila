@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tamaños de Bodega</title>
+    <style>
+        :root {
+            --blush: #DC4F7C;
+            --tomato: #C42B34;
+            --vanilla: #FCE9AB;
+            --orange: #FC8A2D;
+            --olive: #9F9820;
+            --cream: #fffaf0;
+            --dark: #422b2b;
+            --gray: #6f6260;
+            --white: #ffffff;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: var(--cream);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        img {
+            max-width: 100%;
+            display: block;
+        }
+        .tamanos-hero {
+            background-image:
+            linear-gradient(
+                rgba(196, 43, 52, 0.72),
+                rgba(220, 79, 124, 0.72)
+                ),
+                url("principal.jpg");
+            background-size: cover;
+            background-position: center;
+            min-height: 380px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .tamanos-hero h1 {
+            font-size: 48px;
+            margin-bottom: 18px;
+            font-weight: 700;
+        }
+        .tamanos-hero p {
+            max-width: 720px;
+            margin: auto;
+            font-size: 19px;
+            opacity: 0.95;
+        }
+        .tamanos-contenedor {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 70px 0;
+        }
+        .tamanos-introduccion {
+            text-align: center;
+            margin-bottom: 45px;
+        }
+        .tamanos-introduccion h2 {
+            color: var(--tomato);
+            font-size: 34px;
+            margin-bottom: 12px;
+        }
+        .tamanos-introduccion p {
+            color: var(--gray);
+            font-size: 17px;
+        }
+        .tamanos-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+        }
+        .tamanos-card {
+            background-color: var(--white);
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(66, 43, 43, 0.10);
+            transition: 0.3s ease;
+            border: 1px solid rgba(196, 43, 52, 0.08);
+        }
+        .tamanos-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(66, 43, 43, 0.16);
+        }
+        .tamanos-imagen {
+            width: 100%;
+            height: 210px;
+            background-color: var(--vanilla);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .tamanos-imagen img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+        .tamanos-card:hover .tamanos-imagen img {
+            transform: scale(1.05);
+        }
+        .tamanos-card-contenido {
+            padding: 25px;
+        }
+        .tamanos-card-contenido h3 {
+            font-size: 24px;
+            color: var(--tomato);
+            margin-bottom: 5px;
+        }
+        .tamanos-medida {
+            color: var(--orange);
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .tamanos-superficie {
+            background-color: var(--vanilla);
+            color: var(--dark);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .tamanos-card-contenido h4 {
+            color: var(--dark);
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        .tamanos-card-contenido ul {
+            padding-left: 20px;
+            color: var(--gray);
+        }
+        .tamanos-card-contenido li {
+            margin-bottom: 5px;
+        }
+        .recomendaciones {
+            margin-top: 90px;
+        }
+        .recomendaciones-titulo {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .recomendaciones-titulo h2 {
+            color: var(--tomato);
+            font-size: 34px;
+            margin-bottom: 10px;
+        }
+        .recomendaciones-titulo p {
+            color: var(--gray);
+        }
+        .recomendaciones-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        .recomendacion-card {
+            background-color: var(--white);
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(66, 43, 43, 0.10);
+            transition: 0.3s ease;
+        }
+        .recomendacion-card:hover {
+            transform: translateY(-6px);
+        }
+        .recomendacion-imagen {
+            height: 220px;
+            overflow: hidden;
+        }
+        .recomendacion-imagen img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+        .recomendacion-card:hover img {
+            transform: scale(1.05);
+        }
+        .recomendacion-contenido {
+            padding: 25px;
+        }
+        .recomendacion-contenido h3 {
+            color: var(--tomato);
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+        .recomendacion-contenido p {
+            color: var(--gray);
+        }
+        .consejo {
+            margin-top: 70px;
+            background-color: var(--olive);
+            color: white;
+            border-radius: 18px;
+            padding: 40px;
+            text-align: center;
+        }
+        .consejo h2 {
+            font-size: 28px;
+            margin-bottom: 12px;
+        }
+        .consejo p {
+            max-width: 750px;
+            margin: auto;
+            font-size: 17px;
+        }
+        .tamanos-boton {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 14px 30px;
+            background-color: var(--orange);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: 0.3s ease;
+        }
+        .tamanos-boton:hover {
+            background-color: var(--tomato);
+            transform: translateY(-2px);
+        }
+        .tamanos-aviso {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #fff3d2;
+            border-left: 5px solid var(--orange);
+            border-radius: 8px;
+            color: var(--dark);
+        }
+        @media (max-width: 1000px) {
+            .tamanos-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .recomendaciones-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 600px) {
+            .tamanos-hero {
+                padding: 55px 20px;
+            }
+            .tamanos-hero h1 {
+                font-size: 34px;
+            }
+            .tamanos-hero p {
+                font-size: 16px;
+            }
+            .tamanos-grid {
+                grid-template-columns: 1fr;
+            }
+            .tamanos-contenedor {
+                width: 92%;
+                padding: 45px 0;
+            }
+            .consejo {
+                padding: 30px 20px;
+            }
+            .top, .menu { height: 76px; }
+             .top { position: fixed; top: 0; left: 0; z-index: 10; width: 100%; height: 88px; background: var(--white); box-shadow: 0 2px 12px rgba(15, 30, 50, .12); overflow-x: auto; }
+        .menu { width: min(100% - 64px, 1000px); min-width: 850px; height: 88px; margin: 0 auto; border-collapse: separate; border-spacing: 10px 0; }
+        .menu td { vertical-align: middle; }
+        .menu td:not(:first-child) { text-align: center; }
+        .menu h4 { color: #16243a; font-size: 14px; white-space: nowrap; }
+        .menu a { color: #16243a; text-decoration: none; }
+        .menu a:hover, .menu a:focus-visible { color: var(--blue); }
+        .logo { width: 130px; height: 72px; object-fit: contain; }
+        }
+    </style>
+</head>
+<body>
+        <header class="top">
+            <table class="menu">
+                <tr>
+                    <td><a href="#inicio"><img class="logo" src="" alt="Logo de Bodega Segura Zaachila"></a></td>
+                    <td><h4><a href="#caracteristicas">Características</a></h4></td>
+                    <td><h4><a href="proyecto/tamanos.html">Tamaños</a></h4></td>
+                    <td><h4><a href="#ubicacion">Ubicación</a></h4></td>
+                    <td><h4><a href="#contacto">Contacto</a></h4></td>
+                    <td><a href="tel:+529514616417" class="contacto"><img src="imagenes/telefono Background Removed.png" alt="" aria-hidden="true"> +52 951 461 6417</a></td>
+                    <td><a href="mailto:bodegasegurazaachila@gmail.com" class="gmail"><img src="imagenes/gmail Background Removed.png" alt="" aria-hidden="true"> Gmail</a></td>
+                </tr>
+            </table>
+    </header>
+    <br><br><br>
+    <header class="tamanos-hero">
+        <h1>
+            Encuentra el espacio ideal
+        </h1>
+        <p>
+            Tenemos diferentes tamaños de bodegas para adaptarnos
+            a tus necesidades de almacenamiento.
+        </p>
+    </header>
+    <main class="tamanos-contenedor">
+        <section class="tamanos-introduccion">
+            <h2>
+                Nuestros tamaños
+            </h2>
+            <p>
+                Conoce nuestras opciones y elige el espacio
+                que mejor se adapte a lo que necesitas guardar.
+            </p>
+        </section>
+        <section class="tamanos-grid">
+            <article class="tamanos-card">
+                <div class="tamanos-imagen">
+                    <img
+                        src="bodega4m.jpg"
+                        alt="Bodega de 4 metros cuadrados">
+                </div>
+                <div class="tamanos-card-contenido">
+                    <h3>
+                        Espacio pequeño
+                    </h3>
+                    <div class="tamanos-medida">
+                        2 × 2 m
+                    </div>
+                    <div class="tamanos-superficie">
+                        4 m²
+                    </div>
+                    <h4>
+                        Ideal para:
+                    </h4>
+                    <ul>
+                        <li>
+                            Cajas y documentos
+                        </li>
+                        <li>
+                            Objetos personales
+                        </li>
+                        <li>
+                            Herramientas
+                        </li>
+                        <li>
+                            Artículos pequeños
+                        </li>
+                    </ul>
+                </div>
+            </article>
+            <article class="tamanos-card">
+                <div class="tamanos-imagen">
+                    <img
+                        src="bodega9m.jpg"
+                        alt="Bodega de 9 metros cuadrados">
+                </div>
+                <div class="tamanos-card-contenido">
+                    <h3>
+                        Espacio mediano
+                    </h3>
+                    <div class="tamanos-medida">
+                        3 × 3 m
+                    </div>
+                    <div class="tamanos-superficie">
+                        9 m²
+                    </div>
+                    <h4>
+                        Ideal para:
+                    </h4>
+                    <ul>
+                        <li>
+                            Muebles
+                        </li>
+                        <li>
+                            Electrodomésticos
+                        </li>
+                        <li>
+                            Cajas de una habitación
+                        </li>
+                        <li>
+                            Equipo y herramientas
+                        </li>
+                    </ul>
+                </div>
+            </article>
+            <article class="tamanos-card">
+                <div class="tamanos-imagen">
+                    <img
+                        src="bodega20m.jpg"
+                        alt="Bodega de 20 metros cuadrados">
+                </div>
+                <div class="tamanos-card-contenido">
+                    <h3>
+                        Espacio grande
+                    </h3>
+                    <div class="tamanos-medida">
+                        4 × 5 m
+                    </div>
+                    <div class="tamanos-superficie">
+                        20 m²
+                    </div>
+                    <h4>
+                        Ideal para:
+                    </h4>
+                    <ul>
+                        <li>
+                            Muebles de una casa
+                        </li>
+                        <li>
+                            Mercancía
+                        </li>
+                        <li>
+                            Equipo de trabajo
+                        </li>
+                        <li>
+                            Vehículos pequeños
+                        </li>
+                    </ul>
+                </div>
+            </article>
+
+            <article class="tamanos-card">
+                <div class="tamanos-imagen">
+                    <img
+                        src="bodega40m.jpg"
+                        alt="Bodega de 40 metros cuadrados">
+                </div>
+                <div class="tamanos-card-contenido">
+                    <h3>
+                        Espacio extra grande
+                    </h3>
+                    <div class="tamanos-medida">
+                        5 × 8 m
+                    </div>
+                    <div class="tamanos-superficie">
+                        40 m²
+                    </div>
+                    <h4>
+                        Ideal para:
+                    </h4>
+                    <ul>
+                        <li>
+                            Automóviles
+                        </li>
+                        <li>
+                            Maquinaria
+                        </li>
+                        <li>
+                            Grandes cantidades de mercancía
+                        </li>
+                        <li>
+                            Mobiliario voluminoso
+                        </li>
+                    </ul>
+                </div>
+            </article>
+        </section>
+
+        <section class="recomendaciones">
+            <div class="recomendaciones-titulo">
+                <h2>
+                    ¿Qué necesitas almacenar?
+                </h2>
+                <p>
+                    Encuentra una opción de acuerdo con el tipo
+                    de artículos que deseas guardar.
+                </p>
+            </div>
+            <div class="recomendaciones-grid">
+                <article class="recomendacion-card">
+                    <div class="recomendacion-imagen">
+                        <img
+                            src="carro.png"
+                            alt="Automóvil">
+                    </div>
+                    <div class="recomendacion-contenido">
+                        <h3>
+                            Automóviles
+                        </h3>
+                        <p>
+                            Para guardar un automóvil se recomienda
+                            un espacio amplio que permita almacenar
+                            el vehículo y contar con suficiente espacio
+                            para maniobrar.
+                        </p>
+                    </div>
+                </article>
+
+                <article class="recomendacion-card">
+                    <div class="recomendacion-imagen">
+                        <img
+                            src="muebles.png"
+                            alt="Muebles">
+                    </div>
+                    <div class="recomendacion-contenido">
+                        <h3>
+                            Muebles y hogar
+                        </h3>
+                        <p>
+                            Una bodega mediana o grande puede ser
+                            adecuada para guardar muebles,
+                            electrodomésticos, cajas y artículos
+                            de una vivienda.
+                        </p>
+                    </div>
+                </article>
+                <article class="recomendacion-card">
+                    <div class="recomendacion-imagen">
+                        <img
+                            src="mercancia.png"
+                            alt="Mercancía">
+                    </div>
+                    <div class="recomendacion-contenido">
+                        <h3>
+                            Mercancía
+                        </h3>
+                        <p>
+                            Para negocios y emprendimientos, el tamaño
+                            recomendado depende de la cantidad y volumen
+                            de productos que necesites almacenar.
+                        </p>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="consejo">
+            <h2>
+                ¿No sabes qué tamaño elegir?
+            </h2>
+            <p>
+                Considera la cantidad, tamaño y volumen de tus
+                pertenencias. Si tienes dudas, nuestro equipo puede
+                ayudarte a encontrar el espacio más conveniente
+                para tus necesidades.
+            </p>
+            <a
+                href="#"
+                class="tamanos-boton">
+
+                Solicitar información
+            </a>
+        </section>
+
+        <div class="tamanos-aviso">
+            <strong>
+                Importante:
+            </strong>
+            Algunos artículos pueden requerir condiciones especiales
+            de almacenamiento. Los materiales inflamables, peligrosos
+            o que representen un riesgo están sujetos a las políticas
+            de seguridad de la empresa.
+        </div>
+    </main>
+</body>
+</html>

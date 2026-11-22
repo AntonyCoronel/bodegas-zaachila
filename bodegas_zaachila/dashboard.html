@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard | Bodegas Seguras Zaachila</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div class="dashboard-shell">
+    <aside class="dashboard-sidebar">
+      <div class="dash-brand">
+        <div class="brand-badge">▣</div>
+        <div>
+          <strong>Bodegas Seguras</strong>
+          <span>Panel administrativo demo</span>
+        </div>
+      </div>
+      <nav class="side-nav">
+        <a class="active" href="#resumen">Resumen</a>
+        <a href="#inventario">Bodegas</a>
+        <a href="#solicitudes">Solicitudes</a>
+        <a href="index.html">Ir al sitio público</a>
+        <a href="bodega.html?id=1">Ver una bodega</a>
+      </nav>
+      <p style="margin-top:24px;color:#93a8cb;line-height:1.7">Aquí puedes editar el precio y el estado de las 4 bodegas. Los cambios se reflejan automáticamente en la página pública.</p>
+    </aside>
+
+    <main class="dashboard-main">
+      <section class="dash-top" id="resumen">
+        <div>
+          <span class="eyebrow" style="color:var(--blue);background:#edf3ff;border-color:#d8e4ff">Dashboard</span>
+          <h1 style="margin:12px 0 10px;font-size:2.4rem">Administración de bodegas de alquiler</h1>
+          <p style="margin:0;color:var(--muted);max-width:760px">Panel para revisar 4 bodegas, clientes asignados, disponibilidad, precios y solicitudes. Está hecho en JavaScript puro para que puedas mostrar lógica funcional sin backend.</p>
+        </div>
+        <div class="inline-actions">
+          <button class="btn btn-secondary" id="resetData">Restaurar demo</button>
+          <a class="btn btn-primary" href="index.html">Abrir sitio público</a>
+        </div>
+      </section>
+
+      <section class="dashboard-cards" id="dashboardCards"></section>
+
+      <section class="dashboard-grid">
+        <article class="panel">
+          <h2>Disponibilidad actual</h2>
+          <div class="availability-list" id="availabilityList"></div>
+        </article>
+        <article class="panel">
+          <h2>Solicitudes recientes</h2>
+          <div id="recentRequests"></div>
+        </article>
+      </section>
+
+      <section class="section" id="inventario" style="padding-bottom:32px">
+        <div class="table-card">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Código / Bodega</th>
+                  <th>Volumen</th>
+                  <th>Precio</th>
+                  <th>Estado</th>
+                  <th>Capacidad</th>
+                  <th>Cliente asignado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="bodegasTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="solicitudes" style="padding-top:0">
+        <div class="table-card">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Cliente</th>
+                  <th>Bodega</th>
+                  <th>Contacto</th>
+                  <th>Fecha</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody id="solicitudesTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    <p class="demo-notice">Versión demostrativa: los datos de clientes son ficticios y se almacenan solamente en este navegador. No hay autenticación ni conexión a un servidor.</p>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="editModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modalTitle">Editar bodega y asignación</h3>
+        <button class="icon-button" id="closeModal">×</button>
+      </div>
+      <form id="editForm">
+        <input type="hidden" name="id">
+        <div class="form-grid">
+          <label class="field">
+            Nombre
+            <input type="text" name="nombre" required>
+          </label>
+          <label class="field">
+            Volumen (m³)
+            <input type="number" name="volumen" min="1" step="1" required>
+          </label>
+          <label class="field">
+            Precio mensual
+            <input type="number" name="precio" min="0" step="1" required>
+          </label>
+          <label class="field">
+            Estado
+            <select name="estado">
+              <option>Disponible</option>
+              <option>Reservada</option>
+              <option>Ocupada</option>
+            </select>
+          </label>
+          <label class="field full">
+            Cliente asignado (obligatorio si está reservada u ocupada)
+            <input type="text" name="clienteNombre" id="clienteNombre" maxlength="90" placeholder="Nombre del cliente o negocio">
+          </label>
+          <label class="field">
+            Teléfono del cliente
+            <input type="tel" name="clienteTelefono" maxlength="25" placeholder="Ej. 951 000 0000">
+          </label>
+          <label class="field">
+            Correo del cliente
+            <input type="email" name="clienteCorreo" maxlength="100" placeholder="correo@ejemplo.com">
+          </label>
+          <p class="demo-notice field full" id="clienteAyuda">Disponible: sin cliente asignado. Reservada u Ocupada: requiere un cliente.</p>
+          <label class="field full">
+            Descripción
+            <textarea name="descripcion" required></textarea>
+          </label>
+        </div>
+        <div style="margin-top:18px;display:flex;justify-content:flex-end;gap:12px">
+          <button type="button" class="btn btn-secondary" id="cancelModal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar cambios</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/dashboard.js"></script>
+</body>
+</html>

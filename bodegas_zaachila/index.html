@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bodegas Seguras Zaachila | 4 Bodegas de Alquiler</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container navbar">
+      <a class="brand" href="#inicio">
+        <div class="brand-badge">▣</div>
+        <div>
+          Bodegas Seguras
+          <small>Zaachila · renta de minibodegas</small>
+        </div>
+      </a>
+      <nav class="nav-links">
+        <a href="#bodegas">Bodegas</a>
+        <a href="#beneficios">Beneficios</a>
+        <a href="#ubicacion">Ubicación</a>
+        <a href="#contacto">Contacto</a>
+      </nav>
+      <div class="nav-actions">
+        <a class="btn btn-secondary" href="dashboard.html">Dashboard</a>
+        <a class="btn btn-primary" href="#cotizacion">Cotizar ahora</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="inicio">
+      <div class="container hero-grid">
+        <div>
+          <span class="eyebrow">4 bodegas de alquiler para tu negocio</span>
+          <h1>Almacenamiento seguro, flexible y moderno en Zaachila</h1>
+          <p>
+            Esta versión incluye <strong>cuatro bodegas de ejemplo dentro del sitio</strong>, cada una con su propia disponibilidad,
+            descripción, precio, contenido recomendado y vista de detalle para que el cliente pueda ingresar y conocerla.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-accent" href="#bodegas">Ver bodegas</a>
+            <a class="btn btn-secondary" href="dashboard.html">Abrir dashboard</a>
+          </div>
+          <div class="quick-stats" id="quickStats"></div>
+        </div>
+        <div class="hero-card">
+          <h3>¿Qué incluye esta entrega?</h3>
+          <p>Catálogo mejorado + imágenes + detalles de cada bodega + solicitudes + panel administrativo.</p>
+          <ul>
+            <li><span>✅</span><span>4 bodegas con disponibilidad dinámica y código individual</span></li>
+            <li><span>✅</span><span>Ingreso a detalle individual por bodega</span></li>
+            <li><span>✅</span><span>Dashboard para revisar solicitudes y estados</span></li>
+            <li><span>✅</span><span>Persistencia local con <code>localStorage</code></span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="metrics-grid" id="metricsGrid"></div>
+      </div>
+    </section>
+
+    <section class="section" id="beneficios">
+      <div class="container">
+        <h2 class="section-title">¿Por qué elegir nuestras bodegas?</h2>
+        <p class="section-subtitle">Las cuatro bodegas están diseñadas para distintos usos: resguardo personal, mudanzas parciales e inventario comercial. Todo con seguridad, flexibilidad y control.</p>
+        <div class="feature-grid">
+          <article class="feature-card">
+            <div class="feature-icon">🛡️</div>
+            <h3>Seguridad 24/7</h3>
+            <p>Monitoreo permanente, control de acceso y vigilancia en zonas comunes para que tus pertenencias permanezcan protegidas.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon">📦</div>
+            <h3>Espacios bien pensados</h3>
+            <p>Cada bodega tiene un propósito claro: mini, mediana, comercial o familiar, con contenido sugerido y capacidad estimada.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon">🚚</div>
+            <h3>Fácil carga y descarga</h3>
+            <p>Ideal para mudanzas, resguardo temporal o inventario de negocio con un flujo práctico para organización y acceso.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="bodegas">
+      <div class="container">
+        <h2 class="section-title">Bodegas de alquiler disponibles</h2>
+        <p class="section-subtitle">Aquí están las 4 bodegas creadas para tu proyecto. Cada una se puede cotizar y también se puede abrir para ver su contenido y características completas.</p>
+        <div class="warehouse-grid" id="bodegasGrid"></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="promo-band">
+          <div>
+            <h3>Promoción de lanzamiento</h3>
+            <p>50% de descuento el primer mes al pagar 3 meses por anticipado. Puedes cambiar esta información desde el código si tu profesor te pide otra promoción.</p>
+          </div>
+          <a class="btn btn-secondary" href="#cotizacion">Quiero cotizar</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="ubicacion">
+      <div class="container info-layout">
+        <article class="info-box">
+          <h3>Ubicación y operación</h3>
+          <p><strong>Dirección:</strong> La Soledad, 71313 Villa de Zaachila, Oaxaca.</p>
+          <ul class="bullet-list">
+            <li>Acceso práctico desde vialidades principales.</li>
+            <li>Horarios amplios para atención y entrega.</li>
+            <li>Espacios ordenados por categorías de almacenamiento.</li>
+            <li>Ideal para estudiantes, familias, emprendedores y comercios.</li>
+          </ul>
+        </article>
+        <article class="info-box">
+          <h3>Qué puedes decir cuando te pregunten “realiza 4 bodegas”</h3>
+          <p>En este proyecto se interpretó como <strong>crear cuatro unidades de almacenamiento en renta</strong> dentro del sitio, cada una con:</p>
+          <ul class="bullet-list">
+            <li>Identificador único y nombre de la bodega</li>
+            <li>Imagen propia</li>
+            <li>Precio mensual</li>
+            <li>Disponibilidad (Disponible, Reservada u Ocupada)</li>
+            <li>Cliente asignado (visible únicamente en el dashboard)</li>
+            <li>Contenido recomendado</li>
+            <li>Vista de detalle para ingresar a la bodega</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="contacto">
+      <div class="container contact-layout">
+        <article class="contact-card">
+          <h2 style="margin-top:0">Contacto</h2>
+          <p class="section-subtitle" style="text-align:left;margin:0 0 18px;max-width:none">Puedes usar este formulario para registrar solicitudes de demostración que luego aparecerán en el dashboard.</p>
+          <ul class="contact-list" id="contactList"></ul>
+        </article>
+        <article class="contact-card" id="cotizacion">
+          <h2 style="margin-top:0">Solicita una cotización</h2>
+          <form id="contactForm">
+            <p class="demo-notice">Prototipo: esta solicitud se guarda únicamente en tu navegador; no se envía a una empresa real.</p>
+            <div class="form-grid">
+              <label class="field">
+                Nombre completo
+                <input type="text" name="nombre" required placeholder="Tu nombre completo">
+              </label>
+              <label class="field">
+                Teléfono
+                <input type="tel" name="telefono" required placeholder="951 000 0000">
+              </label>
+              <label class="field">
+                Correo
+                <input type="email" name="correo" required placeholder="correo@ejemplo.com">
+              </label>
+              <label class="field">
+                Bodega de interés
+                <select name="bodegaId" id="bodegaSelect" required></select>
+              </label>
+              <label class="field full">
+                Mensaje
+                <textarea name="mensaje" placeholder="Cuéntanos qué deseas almacenar y por cuánto tiempo"></textarea>
+              </label>
+              <div class="field full">
+                <button class="btn btn-primary btn-block" type="submit">Enviar solicitud</button>
+              </div>
+            </div>
+          </form>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <h4>Bodegas Seguras Zaachila</h4>
+          <p>Demo funcional con 4 bodegas de alquiler, disponibilidad y dashboard administrativo. Precios e imágenes ilustrativos.</p>
+        </div>
+        <div>
+          <h4>Navegación</h4>
+          <p><a href="#bodegas">Bodegas</a><br><a href="#beneficios">Beneficios</a><br><a href="#contacto">Contacto</a><br><a href="dashboard.html">Dashboard</a></p>
+        </div>
+        <div>
+          <h4>Proyecto</h4>
+          <p>Hecho en HTML, CSS y JavaScript puro para que lo puedas abrir directamente en VS Code o con Live Server.</p>
+        </div>
+      </div>
+      <div class="footer-bottom">© 2026 Bodegas Seguras Zaachila · Prototipo académico</div>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/index.js"></script>
+</body>
+</html>
