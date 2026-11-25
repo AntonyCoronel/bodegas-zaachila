@@ -1,0 +1,121 @@
+# Peticiones de prueba para la API (VS Code con REST Client o Visual Studio).
+# Las mismas peticiones, con pruebas automáticas, están en backend/postman/BodegasZaachila.postman_collection.json
+
+@base = http://localhost:5080
+
+### Bienvenida (lista de endpoints de usuarios y de administración)
+GET {{base}}/
+
+# =====================================================================
+# USUARIOS: páginas públicas (catálogo, ficha y cotización)
+# =====================================================================
+
+### Datos de la empresa
+GET {{base}}/api/empresa
+
+### Catálogo de bodegas (sin datos de clientes)
+GET {{base}}/api/bodegas
+
+### Solo bodegas disponibles
+GET {{base}}/api/bodegas?estado=Disponible
+
+### Ficha de una bodega
+GET {{base}}/api/bodegas/1
+
+### Solicitar cotización (la bodega debe estar Disponible)
+POST {{base}}/api/solicitudes
+Content-Type: application/json
+
+{
+  "bodegaId": 1,
+  "nombre": "Juan Pérez",
+  "telefono": "951 123 4567",
+  "correo": "juan@example.com",
+  "mensaje": "Quiero guardar cajas por 3 meses."
+}
+
+### Error 400: bodega Reservada
+POST {{base}}/api/solicitudes
+Content-Type: application/json
+
+{
+  "bodegaId": 2,
+  "nombre": "Ana",
+  "telefono": "951 000 0000",
+  "correo": "ana@example.com"
+}
+
+# =====================================================================
+# ADMINISTRACIÓN: dashboard
+# =====================================================================
+
+### Resumen del dashboard (conteos e ingreso estimado)
+GET {{base}}/api/admin/resumen
+
+### Bodegas con su cliente asignado
+GET {{base}}/api/admin/bodegas
+
+### Detalle de una bodega con su cliente
+GET {{base}}/api/admin/bodegas/2
+
+### Crear bodega
+POST {{base}}/api/admin/bodegas
+Content-Type: application/json
+
+{
+  "nombre": "Bodega Extra Grande",
+  "volumen": 20,
+  "precio": 2499,
+  "estado": "Disponible",
+  "descripcion": "Espacio amplio para mudanzas completas.",
+  "etiqueta": "Máxima capacidad",
+  "capacidad": "Contenido de una casa pequeña.",
+  "contenido": ["Muebles grandes", "Electrodomésticos", "Cajas de mudanza"],
+  "caracteristicas": ["Acceso amplio", "Área techada"]
+}
+
+### Editar bodega: marcarla como Ocupada con cliente
+PUT {{base}}/api/admin/bodegas/4
+Content-Type: application/json
+
+{
+  "nombre": "Bodega Familiar",
+  "volumen": 12,
+  "precio": 1799,
+  "estado": "Ocupada",
+  "descripcion": "Más espacio para cajas, muebles y artículos de una mudanza familiar.",
+  "cliente": { "nombre": "Familia López", "telefono": "951 000 0004", "correo": "lopez@example.com" }
+}
+
+### Error 400: Reservada sin cliente
+PUT {{base}}/api/admin/bodegas/1
+Content-Type: application/json
+
+{
+  "nombre": "Bodega Mini",
+  "volumen": 3,
+  "precio": 499,
+  "estado": "Reservada",
+  "descripcion": "Sin cliente asignado"
+}
+
+### Eliminar bodega (409 si tiene solicitudes)
+DELETE {{base}}/api/admin/bodegas/5
+
+### Todas las solicitudes
+GET {{base}}/api/admin/solicitudes
+
+### Solicitudes pendientes
+GET {{base}}/api/admin/solicitudes?estado=Pendiente
+
+### Cambiar estado de una solicitud
+PATCH {{base}}/api/admin/solicitudes/1/estado
+Content-Type: application/json
+
+{ "estado": "Contactado" }
+
+### Eliminar solicitud
+DELETE {{base}}/api/admin/solicitudes/1
+
+### Restaurar datos de demostración
+POST {{base}}/api/admin/demo/reset
