@@ -1,0 +1,3 @@
+:host { min-height: 0; background: none; }
+.detail-panel.cargando .detail-main { color: var(--muted); }
+a.button { text-decoration: none; }

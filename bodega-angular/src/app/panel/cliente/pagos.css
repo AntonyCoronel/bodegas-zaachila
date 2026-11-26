@@ -1,0 +1,62 @@
+.concepto::first-letter { text-transform: uppercase; }
+
+.recibo { display: flex; align-items: center; gap: 16px; border-color: rgba(20, 118, 79, 0.25); }
+.recibo h2 { color: var(--ok); font-size: 17px; }
+.recibo p { color: var(--gris); font-size: 14px; }
+.recibo .d-btn { margin-left: auto; }
+.ok-icono { display: grid; place-items: center; width: 44px; height: 44px; flex: none; border-radius: 50%; background: var(--ok-fondo); color: var(--ok); }
+
+.deudas { display: grid; gap: 10px; }
+.deuda { border: 1px solid var(--linea); border-radius: 14px; transition: border-color 0.18s ease, box-shadow 0.18s ease; }
+.deuda.vencida { border-color: rgba(176, 57, 48, 0.3); }
+.deuda.abierta { border-color: var(--tomate); box-shadow: 0 0 0 3px rgba(196, 43, 52, 0.08); }
+.deuda-fila { display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto; align-items: center; gap: 16px; padding: 14px 16px; }
+.deuda-info { display: grid; min-width: 0; }
+.deuda-info strong { font-size: 15px; }
+.importe { font-size: 18px; white-space: nowrap; }
+.vencida .importe { color: var(--mal); }
+
+.pagar { display: grid; gap: 14px; padding: 4px 16px 16px; }
+.pagar fieldset { margin: 0; padding: 0; border: 0; }
+.pagar legend { margin-bottom: 10px; font-size: 13px; font-weight: 700; }
+.metodos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.metodo {
+  position: relative;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 12px;
+  border: 1px solid #e6dacb;
+  border-radius: 12px;
+  background: var(--crema);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+.metodo:hover { border-color: #d4c3b1; }
+.metodo input { position: absolute; opacity: 0; pointer-events: none; }
+.metodo:has(input:focus-visible) { outline: 3px solid rgba(252, 138, 45, 0.55); outline-offset: 2px; }
+.metodo.activo { border-color: var(--tomate); background: #fff; }
+.metodo app-icono { color: var(--tomate); margin-top: 1px; }
+.metodo span { display: grid; gap: 2px; }
+.metodo strong { font-size: 14px; }
+.metodo small { color: var(--gris); font-size: 12px; line-height: 1.35; }
+.pagar > .d-btn { justify-self: start; }
+
+.cuota { font-size: 30px; font-weight: 700; line-height: 1.1; margin-bottom: 14px; }
+.cuota small { color: var(--gris); font-size: 14px; font-weight: 400; }
+.lista { display: grid; gap: 8px; }
+.lista div { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; }
+.lista dt { color: var(--gris); }
+.lista dd { font-weight: 700; text-align: right; }
+.formas { display: grid; gap: 12px; }
+.formas li { display: flex; gap: 10px; font-size: 13px; color: var(--gris); }
+.formas app-icono { color: var(--tomate); }
+.formas strong { display: block; color: var(--texto); font-size: 14px; }
+.dudas { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--linea); }
+
+@media (max-width: 760px) {
+  .metodos { grid-template-columns: 1fr; }
+  .deuda-fila { grid-template-columns: minmax(0, 1fr) auto; gap: 10px 12px; }
+  .deuda-fila .pill { grid-row: 2; justify-self: start; }
+  .deuda-fila .d-btn { grid-row: 2; }
+}

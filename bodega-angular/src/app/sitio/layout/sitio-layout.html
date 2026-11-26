@@ -1,0 +1,15 @@
+<header class="top">
+  <table class="menu">
+    <tr>
+      <td><a routerLink="/" fragment="inicio"><img class="logo" src="img/logo.jpeg" alt="Logo de Bodega Segura Zaachila"></a></td>
+      <td><h4><a routerLink="/caracteristicas" routerLinkActive="activo" ariaCurrentWhenActive="page">Características</a></h4></td>
+      <td><h4><a routerLink="/tamanos" routerLinkActive="activo" ariaCurrentWhenActive="page">Tamaños</a></h4></td>
+      <td><h4><a routerLink="/ubicacion" routerLinkActive="activo" ariaCurrentWhenActive="page">Ubicación</a></h4></td>
+      <td><h4><a routerLink="/contacto" routerLinkActive="activo" ariaCurrentWhenActive="page">Contacto</a></h4></td>
+      <td><h4><a [routerLink]="rutaCuenta()">{{ cuenta() }}</a></h4></td>
+      <td><a href="tel:+529514616417" class="contacto"><img src="img/telefono.png" alt="" aria-hidden="true"> +52 951 461 6417</a></td>
+      <td><a href="mailto:bodegasegurazaachila@gmail.com" class="gmail"><img src="img/gmail.png" alt="" aria-hidden="true"> Gmail</a></td>
+    </tr>
+  </table>
+</header>
+<router-outlet />

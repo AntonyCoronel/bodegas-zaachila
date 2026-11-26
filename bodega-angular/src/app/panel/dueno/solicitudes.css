@@ -1,0 +1,36 @@
+.barra-filtros { margin-bottom: 18px; }
+.solicitudes { display: grid; gap: 16px; }
+.solicitud {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(260px, 0.95fr);
+  gap: 24px;
+  align-items: start;
+}
+.solicitud.resuelta { box-shadow: none; }
+.sol-top { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 8px; }
+.sol-top h2 { font-size: 18px; color: var(--texto); }
+.contacto { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-bottom: 10px; }
+.contacto a { display: inline-flex; align-items: center; gap: 6px; color: var(--tomate); font-size: 13px; font-weight: 700; text-decoration: none; }
+.contacto a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.contacto app-icono { width: 16px; height: 16px; }
+.mensaje { margin-bottom: 8px; padding: 10px 12px; border-radius: 10px; background: var(--crema); font-size: 14px; font-style: italic; }
+
+.que { display: grid; gap: 8px; padding: 14px 16px; border-radius: 12px; background: var(--crema); }
+.que div { display: flex; justify-content: space-between; gap: 10px; font-size: 14px; }
+.que dt { color: var(--gris); }
+.que dd { font-weight: 700; text-align: right; }
+
+.acciones { display: grid; gap: 10px; }
+.botones { display: flex; flex-wrap: wrap; gap: 8px; }
+.ayuda { font-size: 12px; }
+.rechazo { display: grid; gap: 10px; }
+.respuesta { color: var(--gris); font-size: 14px; }
+.respuesta b { color: var(--texto); }
+
+@media (max-width: 1100px) {
+  .solicitud { grid-template-columns: 1fr 1fr; }
+  .acciones { grid-column: 1 / -1; }
+}
+@media (max-width: 640px) {
+  .solicitud { grid-template-columns: 1fr; gap: 16px; }
+}

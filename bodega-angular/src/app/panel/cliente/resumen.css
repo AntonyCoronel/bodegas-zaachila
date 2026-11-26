@@ -1,0 +1,70 @@
+.saludo { margin: -12px 0 20px; color: var(--gris); font-size: 15px; }
+
+/* Tu bodega */
+.mi-bodega { display: grid; grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr); gap: 24px; padding: 14px; }
+.mi-bodega .foto { width: 100%; height: 100%; min-height: 280px; object-fit: cover; border-radius: 12px; background: var(--crema-2); }
+.mi-bodega .info { display: flex; flex-direction: column; gap: 10px; padding: 10px 10px 8px 0; }
+.fila-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.mi-bodega h2 { color: var(--tomate); font-size: 24px; line-height: 1.15; }
+.medidas { color: #c25f0d; font-size: 17px; font-weight: 700; }
+.area { display: flex; align-items: center; justify-content: space-between; padding: 11px 14px; border-radius: 10px; background: var(--vainilla); }
+.area span { color: #7f5a19; font-size: 13px; font-weight: 700; }
+.area strong { font-size: 22px; }
+.datos { display: grid; gap: 8px; margin: 4px 0 6px; }
+.datos div, .horario div { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; }
+.datos dt, .horario dt { color: var(--gris); }
+.datos dd, .horario dd { font-weight: 700; text-align: right; }
+.mi-bodega .d-link { margin-top: auto; }
+
+/* Plano */
+.leyenda { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 12px; color: var(--gris); font-size: 13px; }
+.leyenda li { display: inline-flex; align-items: center; gap: 7px; }
+.sw { display: inline-block; width: 14px; height: 14px; border: 1px solid #422b2b; border-radius: 3px; }
+.sw.propia { background: #ffe7cf; border-color: #d9741f; }
+.sw.libre { background: #dcf6e7; }
+.sw.ocupada { background: repeating-linear-gradient(45deg, #f3eee8 0 2px, #e1d7cb 2px 3.5px); }
+
+/* Próximo pago */
+.pago .monto { font-size: 34px; font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; }
+.pago .nota { margin-bottom: 14px; }
+.pago .concepto { margin: 4px 0 10px; color: var(--gris); font-size: 14px; }
+.pago .concepto::first-letter { text-transform: uppercase; }
+.vence { display: flex; align-items: center; gap: 7px; margin-bottom: 16px; font-size: 14px; font-weight: 700; }
+.vence app-icono { width: 17px; height: 17px; color: var(--tomate); }
+.pago.vencido { border-color: rgba(176, 57, 48, 0.28); }
+.pago.vencido .monto { color: var(--mal); }
+.pago.vencido .d-btn { margin-top: 16px; }
+.al-corriente { display: flex; align-items: center; gap: 14px; }
+.al-corriente p { color: var(--gris); font-size: 14px; }
+.ok-icono { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--ok-fondo); color: var(--ok); }
+
+/* Código de acceso */
+.boton-link { border: 0; background: none; padding: 0; cursor: pointer; }
+.digitos { display: flex; gap: 10px; margin-bottom: 12px; }
+.digitos span {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 62px;
+  border-radius: 12px;
+  background: var(--navy);
+  color: #fff;
+  font-size: 28px;
+  font-weight: 700;
+  box-shadow: inset 0 -3px 0 rgba(255, 255, 255, 0.08);
+}
+.digitos.apagado span { background: var(--crema-2); color: #b9aba2; box-shadow: none; }
+.horario { display: grid; gap: 6px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--linea); }
+
+/* Solicitudes */
+.solicitudes { display: grid; gap: 14px; }
+.solicitudes li + li { padding-top: 14px; border-top: 1px solid var(--linea); }
+.sol-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.respuesta { margin-top: 6px; color: var(--texto); font-size: 13px; font-style: italic; }
+
+@media (max-width: 700px) {
+  .mi-bodega { grid-template-columns: 1fr; }
+  .mi-bodega .foto { min-height: 200px; max-height: 240px; }
+  .mi-bodega .info { padding: 4px 6px 6px; }
+  .digitos span { width: 48px; height: 56px; font-size: 24px; }
+}

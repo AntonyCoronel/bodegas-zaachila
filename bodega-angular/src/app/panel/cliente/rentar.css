@@ -1,0 +1,79 @@
+.opciones { display: grid; gap: 8px; margin-top: 18px; }
+.opcion {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 8px 14px 8px 8px;
+  border: 1px solid var(--linea);
+  border-radius: 12px;
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease;
+}
+.opcion img { width: 64px; height: 48px; border-radius: 8px; object-fit: cover; }
+.opcion:hover:not(:disabled) { border-color: #e2b9b1; background: #fffcf8; }
+.opcion.activa { border-color: var(--tomate); background: #fff8f6; box-shadow: 0 0 0 3px rgba(196, 43, 52, 0.1); }
+.opcion:disabled { cursor: not-allowed; background: #fbf9f6; }
+.opcion:disabled img { filter: grayscale(0.8); opacity: 0.6; }
+.opcion:disabled .op-texto, .opcion:disabled .op-precio { opacity: 0.6; }
+.op-texto { display: grid; min-width: 0; }
+.op-texto strong { font-size: 15px; }
+.op-texto span { color: var(--gris); font-size: 13px; }
+.op-precio { text-align: right; white-space: nowrap; }
+.op-precio strong { font-size: 15px; }
+.op-precio small { color: var(--gris); font-size: 12px; }
+
+.formulario { position: sticky; top: 24px; }
+.formulario form { display: grid; gap: 14px; }
+.resumen-b {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-bottom: 18px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--vainilla);
+  font-size: 14px;
+}
+.resumen-b strong { margin-left: auto; }
+.total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 14px;
+  border-top: 1px solid var(--linea);
+  color: var(--gris);
+  font-size: 14px;
+}
+.total strong { color: var(--texto); font-size: 24px; }
+
+.guia ol { display: grid; gap: 16px; }
+.guia li { display: flex; gap: 12px; align-items: flex-start; font-size: 14px; }
+.guia b {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--vainilla);
+  color: var(--texto);
+  font-size: 13px;
+}
+
+.historial { margin-top: 22px; }
+.respuesta { max-width: 42ch; color: var(--gris); font-size: 13px; }
+
+@media (max-width: 1100px) {
+  .formulario { position: static; }
+}
+@media (max-width: 560px) {
+  .opcion { grid-template-columns: 52px minmax(0, 1fr) auto; }
+  .opcion img { width: 52px; height: 42px; }
+  .opcion .pill { grid-column: 2 / -1; justify-self: start; }
+}

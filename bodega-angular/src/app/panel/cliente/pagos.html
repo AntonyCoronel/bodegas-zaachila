@@ -1,0 +1,125 @@
+@if (!datos.listo()) {
+  <div class="rejilla dos" aria-busy="true">
+    <div class="d-card"><div class="esqueleto" style="height: 320px"></div></div>
+    <div class="d-card"><div class="esqueleto" style="height: 220px"></div></div>
+  </div>
+} @else {
+  <div class="rejilla dos">
+    <div class="pila">
+      @if (recibo(); as r) {
+        <section class="d-card recibo" role="status">
+          <span class="ok-icono"><app-icono nombre="check" /></span>
+          <div>
+            <h2>Pago registrado</h2>
+            <p>{{ r.concepto }} · {{ r.monto | dinero }} con {{ r.metodo?.toLowerCase() }}. Folio <b>{{ r.folio }}</b>.</p>
+          </div>
+          <button type="button" class="d-btn sec chico" (click)="recibo.set(null)">Listo</button>
+        </section>
+      }
+
+      <section class="d-card" aria-labelledby="t-por">
+        <div class="d-card-head"><h2 id="t-por">Por pagar</h2>
+          @if (porPagar().length) { <p>{{ porPagar().length }} {{ porPagar().length === 1 ? 'pago' : 'pagos' }}</p> }
+        </div>
+
+        @if (porPagar().length) {
+          <ul class="deudas">
+            @for (p of porPagar(); track p.id) {
+              <li class="deuda" [class.abierta]="abierto() === p.id" [class.vencida]="p.estado === 'Vencido'">
+                <div class="deuda-fila">
+                  <div class="deuda-info">
+                    <strong class="concepto">{{ p.concepto }}</strong>
+                    <span class="d-sub">{{ nombreBodega(p.bodegaId) }} ·
+                      @if (p.estado === 'Vencido') { venció el {{ p.vence | fecha }} } @else { vence el {{ p.vence | fecha }} }
+                    </span>
+                  </div>
+                  <span class="pill" [class]="p.estado">{{ p.estado }}</span>
+                  <strong class="importe">{{ p.monto | dinero }}</strong>
+                  <button type="button" class="d-btn chico" [class.sec]="abierto() === p.id" (click)="abrir(p)" [attr.aria-expanded]="abierto() === p.id">
+                    {{ abierto() === p.id ? 'Cancelar' : 'Pagar' }}
+                  </button>
+                </div>
+
+                @if (abierto() === p.id) {
+                  <div class="pagar">
+                    <fieldset>
+                      <legend>¿Cómo quieres pagar?</legend>
+                      <div class="metodos">
+                        @for (m of metodos; track m.valor) {
+                          <label class="metodo" [class.activo]="metodo() === m.valor">
+                            <input type="radio" name="metodo-{{ p.id }}" [value]="m.valor" [checked]="metodo() === m.valor" (change)="metodo.set(m.valor)">
+                            <app-icono [nombre]="m.icono" />
+                            <span><strong>{{ m.titulo }}</strong><small>{{ m.texto }}</small></span>
+                          </label>
+                        }
+                      </div>
+                    </fieldset>
+                    <div class="nota"><app-icono nombre="info" /><span>Pago simulado para la demostración: no se cobra dinero real ni se piden datos de tarjeta.</span></div>
+                    @if (error()) { <p class="error-texto" role="alert">{{ error() }}</p> }
+                    <button type="button" class="d-btn" (click)="confirmar(p)" [disabled]="pagando()">
+                      <app-icono nombre="candado" /> {{ pagando() ? 'Procesando…' : 'Pagar ' + (p.monto | dinero) }}
+                    </button>
+                  </div>
+                }
+              </li>
+            }
+          </ul>
+        } @else {
+          <div class="vacio">
+            <strong>Estás al corriente</strong>
+            <p>No tienes pagos pendientes. Tu próxima mensualidad aparecerá aquí cuando se genere.</p>
+          </div>
+        }
+      </section>
+
+      <section class="d-card" aria-labelledby="t-hist">
+        <div class="d-card-head"><h2 id="t-hist">Historial</h2><p>{{ historial().length }} pagos · {{ totalPagado() | dinero }}</p></div>
+        @if (historial().length) {
+          <div class="tabla-wrap">
+            <table class="d-tabla">
+              <thead><tr><th>Folio</th><th>Concepto</th><th>Pagado el</th><th>Método</th><th class="num">Monto</th></tr></thead>
+              <tbody>
+                @for (p of historial(); track p.id) {
+                  <tr>
+                    <td class="tenue">{{ p.folio }}</td>
+                    <td class="fuerte concepto">{{ p.concepto }}</td>
+                    <td>{{ p.pagadoEn | fecha }}</td>
+                    <td>{{ p.metodo }}</td>
+                    <td class="num fuerte">{{ p.monto | dinero }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <div class="vacio"><strong>Sin pagos todavía</strong><p>Aquí quedará el registro de cada mensualidad que pagues, con su folio.</p></div>
+        }
+      </section>
+    </div>
+
+    <aside class="pila">
+      <section class="d-card" aria-labelledby="t-contrato">
+        <div class="d-card-head"><h2 id="t-contrato">Tu mensualidad</h2></div>
+        @if (contrato(); as c) {
+          <p class="cuota">{{ c.precioMensual | dinero }} <small>al mes</small></p>
+          <dl class="lista">
+            <div><dt>Bodega</dt><dd>{{ nombreBodega(c.bodegaId) }}</dd></div>
+            <div><dt>Día de pago</dt><dd>10 de cada mes</dd></div>
+            <div><dt>Contrato</dt><dd>{{ c.inicio | fecha }} – {{ c.fin | fecha }}</dd></div>
+          </dl>
+        } @else {
+          <p class="d-sub">Aún no tienes un contrato. <a class="d-link" routerLink="/cliente/rentar">Solicita una bodega</a> para empezar.</p>
+        }
+      </section>
+      <section class="d-card" aria-labelledby="t-como">
+        <div class="d-card-head"><h2 id="t-como">Formas de pago</h2></div>
+        <ul class="formas">
+          @for (m of metodos; track m.valor) {
+            <li><app-icono [nombre]="m.icono" /><span><strong>{{ m.titulo }}</strong>{{ m.texto }}</span></li>
+          }
+        </ul>
+        <p class="d-sub dudas">¿Dudas con un cobro? Llama al <a class="d-link" href="tel:+529514616417">+52 951 461 6417</a>.</p>
+      </section>
+    </aside>
+  </div>
+}

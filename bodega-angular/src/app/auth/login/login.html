@@ -1,0 +1,68 @@
+<div class="dash acceso">
+  <section class="lado-foto" aria-hidden="true">
+    <a routerLink="/" class="marca" tabindex="-1"><img src="img/logo.jpeg" alt=""></a>
+    <div class="lema">
+      <h2>El único almacenamiento seguro en todo Zaachila</h2>
+      <ul>
+        <li><app-icono nombre="candado" /> Acceso 24/7 con tu código personal</li>
+        <li><app-icono nombre="calendario" /> Contratos mensuales, sin permanencia</li>
+        <li><app-icono nombre="pagos" /> Paga tu mensualidad desde aquí</li>
+      </ul>
+    </div>
+  </section>
+
+  <main class="lado-form">
+    <a routerLink="/" class="volver"><app-icono nombre="flecha" class="girada" /> Volver al sitio</a>
+
+    <div class="tarjeta">
+      <h1>{{ modo() === 'entrar' ? 'Entra a tu cuenta' : 'Crea tu cuenta' }}</h1>
+      <p class="d-sub">{{ modo() === 'entrar' ? 'Clientes y dueño entran por aquí; cada quien llega a su panel.' : 'Para solicitar una bodega y pagar tus mensualidades.' }}</p>
+
+      <div class="pestanas" role="tablist" aria-label="Elegir acción">
+        <button type="button" role="tab" [attr.aria-selected]="modo() === 'entrar'" (click)="cambiarModo('entrar')">Entrar</button>
+        <button type="button" role="tab" [attr.aria-selected]="modo() === 'registro'" (click)="cambiarModo('registro')">Crear cuenta</button>
+      </div>
+
+      <form (ngSubmit)="enviar()" class="form">
+        @if (modo() === 'registro') {
+          <label class="campo"><span>Nombre completo</span>
+            <input name="nombre" [(ngModel)]="nombre" autocomplete="name" required placeholder="Juan Pérez">
+          </label>
+          <label class="campo"><span>Teléfono</span>
+            <input name="telefono" type="tel" [(ngModel)]="telefono" autocomplete="tel" required placeholder="951 000 0000">
+          </label>
+        }
+        <label class="campo"><span>Correo electrónico</span>
+          <input name="correo" type="email" [(ngModel)]="correo" autocomplete="email" required placeholder="correo@ejemplo.com">
+        </label>
+        <label class="campo"><span>Contraseña</span>
+          <span class="con-boton">
+            <input name="password" [type]="verPassword() ? 'text' : 'password'" [(ngModel)]="password" required
+                   [attr.autocomplete]="modo() === 'entrar' ? 'current-password' : 'new-password'" [placeholder]="modo() === 'registro' ? 'Mínimo 6 caracteres' : ''">
+            <button type="button" (click)="verPassword.set(!verPassword())" [attr.aria-label]="verPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'">
+              <app-icono [nombre]="verPassword() ? 'ojoNo' : 'ojo'" />
+            </button>
+          </span>
+        </label>
+        @if (error()) { <p class="error-texto" role="alert">{{ error() }}</p> }
+        <button class="d-btn ancho" type="submit" [disabled]="enviando()">
+          {{ enviando() ? 'Un momento…' : modo() === 'entrar' ? 'Entrar' : 'Crear cuenta' }}
+        </button>
+      </form>
+
+      @if (demo) {
+        <div class="demo">
+          <p><b>Cuentas de ejemplo</b> (backend simulado, contraseña <code>demo123</code>)</p>
+          <div class="demo-botones">
+            <button type="button" class="d-btn sec" (click)="usarDemo('maria@ejemplo.com')" [disabled]="enviando()">
+              <app-icono nombre="usuario" /> Entrar como cliente
+            </button>
+            <button type="button" class="d-btn sec" (click)="usarDemo('dueno@ejemplo.com')" [disabled]="enviando()">
+              <app-icono nombre="llave" /> Entrar como dueño
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  </main>
+</div>

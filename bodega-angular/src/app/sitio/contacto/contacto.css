@@ -1,0 +1,58 @@
+/* Estilos copiados de proyecto/contacto.html. El menú superior vive en sitio-layout. */
+:host { display:block; --blush: #DC4F7C; --tomato: #C42B34; --vanilla: #FCE9AB; --orange: #FC8A2D; --olive: #9F9820; --cream: #fffaf0; --dark: #422b2b; --gray: #6f6260; --blue: #1460f4; --white: #ffffff; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:host { display:block; font-family: Arial, Helvetica, sans-serif; background-color: var(--cream); color: var(--dark); line-height: 1.6; }
+img { max-width: 100%; display: block; }
+.pagina-hero { background-image:
+            linear-gradient(
+                rgba(196, 43, 52, 0.72),
+                rgba(220, 79, 124, 0.72)
+                ),
+                url("/img/principal.jpg"); background-size: cover; background-position: center; min-height: 380px; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; padding: 60px 20px; }
+.pagina-hero h1 { font-size: 48px; margin-bottom: 18px; font-weight: 700; }
+.pagina-hero p { max-width: 720px; margin: auto; font-size: 19px; opacity: 0.95; }
+.contenedor { width: 90%; max-width: 1200px; margin: 0 auto; padding: 70px 0; }
+.introduccion { text-align: center; margin-bottom: 45px; }
+.introduccion h2 { color: var(--tomato); font-size: 34px; margin-bottom: 12px; }
+.introduccion p { color: var(--gray); font-size: 17px; }
+.contacto-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: 25px; align-items: start; }
+.datos { display: grid; gap: 25px; }
+.dato-card { background-color: var(--white); border-radius: 18px; box-shadow: 0 8px 25px rgba(66, 43, 43, 0.10); border: 1px solid rgba(196, 43, 52, 0.08); padding: 25px; }
+.dato-icono { width: 48px; height: 48px; border-radius: 12px; background-color: var(--vanilla); color: var(--tomato); display: grid; place-items: center; margin-bottom: 14px; }
+.dato-icono svg { width: 24px; height: 24px; }
+.dato-card h3 { font-size: 24px; color: var(--tomato); margin-bottom: 5px; }
+.dato-card p { color: var(--gray); margin-bottom: 10px; }
+.dato-card a { color: var(--dark); font-weight: bold; text-decoration: none; word-break: break-word; }
+.dato-card a:hover { color: var(--tomato); }
+.formulario { background-color: var(--white); border-radius: 18px; box-shadow: 0 8px 25px rgba(66, 43, 43, 0.10); border: 1px solid rgba(196, 43, 52, 0.08); padding: 30px; }
+.formulario h3 { font-size: 24px; color: var(--tomato); margin-bottom: 20px; }
+.campos { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.campo { display: flex; flex-direction: column; gap: 6px; }
+.campo-completo { grid-column: 1 / -1; }
+.campo label { font-weight: bold; font-size: 15px; color: var(--dark); }
+.campo input, .campo select, .campo textarea { font: inherit; color: var(--dark); background-color: var(--cream); border: 1px solid rgba(66, 43, 43, 0.18); border-radius: 8px; padding: 12px 14px; width: 100%; }
+.campo textarea { min-height: 130px; resize: vertical; }
+.campo input:focus, .campo select:focus, .campo textarea:focus { outline: none; border-color: var(--orange); box-shadow: 0 0 0 3px rgba(252, 138, 45, 0.25); }
+.enviar { margin-top: 22px; border: 0; cursor: pointer; font: inherit; font-weight: bold; width: 100%; }
+.nota-formulario { color: var(--gray); font-size: 14px; margin-top: 12px; }
+.consejo { margin-top: 70px; background-color: var(--olive); color: white; border-radius: 18px; padding: 40px; text-align: center; }
+.consejo h2 { font-size: 32px; margin-bottom: 15px; }
+.consejo p { max-width: 750px; margin: auto; font-size: 17px; }
+.botones { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin-top: 25px; }
+.boton { display: inline-block; padding: 14px 30px; background-color: var(--orange); color: white; text-decoration: none; border-radius: 8px; font-weight: bold; transition: 0.3s ease; }
+.boton:hover { background-color: var(--tomato); transform: translateY(-2px); }
+.boton-claro { background-color: var(--white); color: var(--dark); }
+.boton-claro:hover { background-color: var(--vanilla); color: var(--dark); }
+.aviso { margin-top: 30px; padding: 20px; background-color: #fff3d2; border-left: 5px solid var(--orange); border-radius: 8px; color: var(--dark); }
+@media (max-width: 1000px) {
+  .contacto-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .pagina-hero { padding: 55px 20px; }
+  .pagina-hero h1 { font-size: 34px; }
+  .pagina-hero p { font-size: 16px; }
+  .contenedor { width: 92%; padding: 45px 0; }
+  .consejo { padding: 30px 20px; }
+  .campos { grid-template-columns: 1fr; }
+  :host { display:block; }
+}

@@ -1,0 +1,33 @@
+.arriba { display: grid; grid-template-columns: minmax(240px, 0.55fr) minmax(0, 1.45fr); gap: 22px; align-items: stretch; }
+.saldos { display: grid; grid-template-rows: repeat(3, 1fr); padding: 0; }
+.saldo { display: grid; align-content: center; gap: 4px; padding: 16px 24px; }
+.saldo + .saldo { border-top: 1px solid var(--linea); }
+.saldo span { color: var(--gris); font-size: 13px; font-weight: 700; }
+.saldo strong { font-size: 26px; line-height: 1.15; letter-spacing: -0.01em; }
+.saldo.mal strong { color: var(--mal); }
+
+.lista-head { flex-wrap: wrap; align-items: center; }
+.buscar { position: relative; display: block; width: min(280px, 100%); }
+.buscar app-icono { position: absolute; top: 50%; left: 11px; width: 17px; height: 17px; color: var(--gris); transform: translateY(-50%); }
+.buscar input {
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 12px 8px 36px;
+  border: 1px solid rgba(66, 43, 43, 0.18);
+  border-radius: 999px;
+  background: var(--crema);
+  font-size: 14px;
+}
+.buscar input:focus { outline: none; border-color: var(--naranja); background: #fff; box-shadow: 0 0 0 3px rgba(252, 138, 45, 0.25); }
+.filtros { margin-bottom: 14px; }
+.concepto::first-letter { text-transform: uppercase; }
+.fila-mal td { background: #fff7f5; }
+.rojo { color: var(--mal) !important; font-weight: 700; }
+.registrar { display: inline-flex; align-items: center; gap: 6px; }
+.registrar select { min-height: 34px; padding: 4px 8px; border: 1px solid rgba(66, 43, 43, 0.18); border-radius: 8px; background: #fff; font-size: 13px; }
+.total-seis { margin-top: 12px; }
+
+@media (max-width: 900px) {
+  .arriba { grid-template-columns: 1fr; }
+  .saldo { padding: 14px 18px; }
+}

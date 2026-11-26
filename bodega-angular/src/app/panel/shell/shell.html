@@ -1,0 +1,85 @@
+<div class="dash marco">
+  <aside class="riel" aria-label="Navegación del panel">
+    <a class="marca" routerLink="/" aria-label="Ir al sitio de Bodega Segura Zaachila">
+      <img src="img/logo.jpeg" alt="Bodega Segura Zaachila">
+    </a>
+    <p class="rol">{{ etiquetaRol() }}</p>
+
+    <nav class="menu" aria-label="Secciones">
+      @for (e of menu(); track e.ruta) {
+        <a [routerLink]="e.ruta" routerLinkActive="activo" [routerLinkActiveOptions]="{ exact: !!e.exacto }" ariaCurrentWhenActive="page">
+          <app-icono [nombre]="e.icono" />
+          <span>{{ e.texto }}</span>
+        </a>
+      }
+    </nav>
+
+    <div class="pie-riel">
+      <a class="secundario" routerLink="/">
+        <app-icono nombre="sitio" /><span>Ver el sitio</span>
+      </a>
+      @if (demo && rol() === 'dueno') {
+        <button type="button" class="secundario" (click)="reiniciar()" title="Borra los cambios hechos en el navegador y vuelve a los datos iniciales">
+          <app-icono nombre="recargar" /><span>Restaurar datos de ejemplo</span>
+        </button>
+      }
+      <div class="usuario">
+        <span class="avatar" aria-hidden="true">{{ iniciales() }}</span>
+        <div class="usuario-datos">
+          <strong>{{ auth.usuario()?.nombre }}</strong>
+          <span>{{ auth.usuario()?.correo }}</span>
+        </div>
+      </div>
+      <button type="button" class="secundario" (click)="salir()">
+        <app-icono nombre="salir" /><span>Cerrar sesión</span>
+      </button>
+    </div>
+  </aside>
+
+  <div class="principal">
+    <header class="barra-movil">
+      <a routerLink="/" class="marca-movil" aria-label="Ir al sitio"><img src="img/logo.jpeg" alt="Bodega Segura Zaachila"></a>
+      <span class="rol-movil">{{ etiquetaRol() }}</span>
+      <button type="button" class="salir-movil" (click)="salir()" aria-label="Cerrar sesión"><app-icono nombre="salir" /></button>
+    </header>
+
+    <header class="encabezado">
+      <div>
+        <h1>{{ titulo() }}</h1>
+        @if (subtitulo()) { <p>{{ subtitulo() }}</p> }
+      </div>
+      <p class="fecha"><app-icono nombre="calendario" /> <span>{{ hoy }}</span></p>
+    </header>
+
+    @if (datos.error()) {
+      <div class="nota mal error-carga" role="alert">
+        <app-icono nombre="alerta" />
+        <div>
+          <strong>No pudimos cargar los datos.</strong> {{ datos.error() }}
+          <button type="button" class="d-link reintentar" (click)="datos.recargar()">Reintentar</button>
+        </div>
+      </div>
+    }
+
+    <main class="contenido">
+      <router-outlet />
+    </main>
+  </div>
+
+  <nav class="tabs-movil" aria-label="Secciones">
+    @for (e of menu(); track e.ruta) {
+      <a [routerLink]="e.ruta" routerLinkActive="activo" [routerLinkActiveOptions]="{ exact: !!e.exacto }" ariaCurrentWhenActive="page">
+        <app-icono [nombre]="e.icono" />
+        <span>{{ e.texto }}</span>
+      </a>
+    }
+  </nav>
+</div>
+
+@if (aviso.actual(); as a) {
+  <div class="dash-toast" [class.error]="a.tipo === 'error'" role="status" aria-live="polite">
+    <app-icono [nombre]="a.tipo === 'error' ? 'alerta' : 'check'" />
+    <span>{{ a.texto }}</span>
+    <button type="button" (click)="aviso.cerrar()" aria-label="Cerrar aviso">×</button>
+  </div>
+}

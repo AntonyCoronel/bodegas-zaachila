@@ -1,0 +1,131 @@
+@if (!datos.listo()) {
+  <div class="rejilla dos" aria-busy="true">
+    <div class="pila"><div class="d-card"><div class="esqueleto" style="height: 260px"></div></div><div class="d-card"><div class="esqueleto" style="height: 220px"></div></div></div>
+    <div class="pila"><div class="d-card"><div class="esqueleto" style="height: 180px"></div></div><div class="d-card"><div class="esqueleto" style="height: 160px"></div></div></div>
+  </div>
+} @else {
+  <p class="saludo">Hola, {{ nombre() }}.
+    @if (vencidos()) { Tienes un pago vencido. }
+    @else if (contrato()?.estado === 'Reservado') { Tu bodega está apartada. }
+    @else if (contrato()) { Todo en orden con tu bodega. }
+    @else { Elige una bodega para empezar. }
+  </p>
+
+  <div class="rejilla dos">
+    <div class="pila">
+      @if (contrato() && bodega()) {
+        @let c = contrato()!;
+        @let b = bodega()!;
+        <section class="d-card mi-bodega" aria-labelledby="t-bodega">
+          <img class="foto" [src]="foto(b.slug)" [alt]="'Interior ilustrativo del ' + b.titulo">
+          <div class="info">
+            <div class="fila-top"><span class="codigo">{{ b.id }}</span><span class="pill" [class]="c.estado">{{ c.estado === 'Activo' ? 'Contrato activo' : 'Reservada' }}</span></div>
+            <h2 id="t-bodega">{{ b.titulo }}</h2>
+            <p class="medidas">{{ b.dimensiones }}</p>
+            <div class="area"><span>Superficie</span><strong>{{ b.m2 }} m²</strong></div>
+            <dl class="datos">
+              <div><dt>Vigencia</dt><dd>{{ c.inicio | fecha }} – {{ c.fin | fecha }}</dd></div>
+              <div><dt>Mensualidad</dt><dd>{{ c.precioMensual | dinero }}</dd></div>
+              <div><dt>Contrato</dt><dd>{{ c.id }} · {{ c.meses }} {{ c.meses === 1 ? 'mes' : 'meses' }}</dd></div>
+            </dl>
+            <a class="d-link" [routerLink]="ficha(b.slug)">Ver ficha de la bodega →</a>
+          </div>
+        </section>
+      } @else {
+        <section class="d-card sin-bodega">
+          <div class="vacio">
+            <strong>Aún no rentas una bodega</strong>
+            <p>Mira cuáles están libres en el plano, elige la que te sirva y envía tu solicitud. El dueño la revisa y te responde aquí mismo.</p>
+            <a class="d-btn" routerLink="/cliente/rentar"><app-icono nombre="bodega" /> Ver bodegas disponibles</a>
+          </div>
+        </section>
+      }
+
+      <section class="d-card" aria-labelledby="t-plano">
+        <div class="d-card-head">
+          <h2 id="t-plano">{{ bodega() ? 'Dónde está tu bodega' : 'Bodegas en el edificio' }}</h2>
+          <p>Toca una bodega libre para solicitarla</p>
+        </div>
+        <app-plano [bodegas]="datos.bodegas()" modo="cliente" [miBodegaId]="bodega()?.id ?? null" (elegir)="elegirEnPlano($event)" />
+        <ul class="leyenda">
+          @if (bodega()) { <li><i class="sw propia"></i>Tu bodega</li> }
+          <li><i class="sw libre"></i>Disponible</li>
+          <li><i class="sw ocupada"></i>No disponible</li>
+        </ul>
+      </section>
+    </div>
+
+    <div class="pila">
+      <section class="d-card pago" [class.vencido]="proximo()?.estado === 'Vencido'" aria-labelledby="t-pago">
+        <div class="d-card-head"><h2 id="t-pago">Próximo pago</h2>
+          @if (porPagar().length > 1) { <p>{{ porPagar().length }} por pagar</p> }
+        </div>
+        @if (proximo(); as p) {
+          @if (p.estado === 'Vencido') {
+            <div class="nota mal"><app-icono nombre="alerta" /><span>Venció el {{ p.vence | fecha }}, hace {{ abs(dias()) }} {{ abs(dias()) === 1 ? 'día' : 'días' }}. Págalo para mantener tu acceso.</span></div>
+          }
+          <p class="monto">{{ p.monto | dinero }}</p>
+          <p class="concepto">{{ p.concepto }} · {{ nombreBodega(p.bodegaId) }}</p>
+          @if (p.estado !== 'Vencido') {
+            <p class="vence"><app-icono nombre="reloj" />
+              @if (dias() === 0) { Vence hoy } @else { Vence el {{ p.vence | fecha }}, en {{ dias() }} {{ dias() === 1 ? 'día' : 'días' }} }
+            </p>
+          }
+          <a class="d-btn ancho" routerLink="/cliente/pagos" [queryParams]="{ pagar: p.id }"><app-icono nombre="pagos" /> Pagar ahora</a>
+        } @else {
+          <div class="al-corriente">
+            <span class="ok-icono"><app-icono nombre="check" /></span>
+            <div><strong>Estás al corriente</strong><p>No tienes pagos pendientes.</p></div>
+          </div>
+        }
+      </section>
+
+      <section class="d-card acceso" aria-labelledby="t-acceso">
+        <div class="d-card-head"><h2 id="t-acceso">Código de acceso</h2>
+          @if (contrato()?.estado === 'Activo') {
+            <button type="button" class="d-link boton-link" (click)="mostrarCodigo.set(!mostrarCodigo())" [attr.aria-pressed]="mostrarCodigo()">
+              {{ mostrarCodigo() ? 'Ocultar' : 'Mostrar' }}
+            </button>
+          }
+        </div>
+        @if (contrato(); as c) {
+          @if (c.estado === 'Activo') {
+            <div class="digitos" [attr.aria-label]="mostrarCodigo() ? 'Código ' + c.codigoAcceso.split('').join(' ') : 'Código oculto'">
+              @for (d of c.codigoAcceso.split(''); track $index) {
+                <span>{{ mostrarCodigo() ? d : '•' }}</span>
+              }
+            </div>
+            <p class="d-sub">Escríbelo en el teclado de la entrada. Funciona las 24 horas, los 7 días.</p>
+          } @else {
+            <div class="digitos apagado" aria-label="Código aún no activo"><span>–</span><span>–</span><span>–</span><span>–</span></div>
+            <p class="d-sub">Tu código se activa el {{ c.inicio | fecha }}, cuando recibas tu bodega.</p>
+          }
+        } @else {
+          <p class="d-sub">Cuando rentes una bodega aquí aparecerá tu código personal para entrar las 24 horas.</p>
+        }
+        <dl class="horario">
+          <div><dt>Oficina L–V</dt><dd>7:00 AM – 8:00 PM</dd></div>
+          <div><dt>Sábados</dt><dd>8:00 AM – 6:00 PM</dd></div>
+          <div><dt>Domingos</dt><dd>9:00 AM – 5:00 PM</dd></div>
+        </dl>
+      </section>
+
+      <section class="d-card" aria-labelledby="t-sol">
+        <div class="d-card-head"><h2 id="t-sol">Tus solicitudes</h2><a class="d-link" routerLink="/cliente/rentar">Nueva →</a></div>
+        @if (solicitudes().length) {
+          <ul class="solicitudes">
+            @for (s of solicitudes(); track s.id) {
+              <li>
+                <div class="sol-top"><strong>{{ nombreBodega(s.bodegaId) }}</strong><span class="pill" [class]="s.estado">{{ s.estado }}</span></div>
+                <p class="d-sub">Desde {{ s.fechaInicio | fecha }} · {{ s.meses }} {{ s.meses === 1 ? 'mes' : 'meses' }}</p>
+                @if (s.respuesta) { <p class="respuesta">“{{ s.respuesta }}”</p> }
+              </li>
+            }
+          </ul>
+        } @else {
+          <p class="d-sub">Todavía no has enviado solicitudes.</p>
+        }
+      </section>
+    </div>
+  </div>
+}

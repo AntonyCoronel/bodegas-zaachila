@@ -1,0 +1,79 @@
+.acceso { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); min-height: 100vh; background: var(--crema); }
+
+/* Foto del hero del inicio con el mismo degradado azul marino */
+.lado-foto {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 36px 48px 56px;
+  background: linear-gradient(160deg, rgba(4, 20, 49, 0.9), rgba(4, 20, 49, 0.55) 55%, rgba(4, 20, 49, 0.35)), url('/img/img3.jpeg') center / cover;
+  color: #fff;
+}
+.marca { display: inline-block; align-self: flex-start; padding: 8px 14px; border-radius: 12px; background: #fff; }
+.marca img { display: block; width: 140px; height: 56px; object-fit: contain; }
+.lema { max-width: 520px; }
+.lema h2 { margin-bottom: 26px; font-size: 44px; line-height: 1.02; letter-spacing: -0.03em; }
+.lema ul { display: grid; gap: 14px; }
+.lema li { display: flex; align-items: center; gap: 12px; color: rgba(255, 255, 255, 0.92); font-size: 17px; }
+.lema app-icono { width: 22px; height: 22px; color: var(--naranja); }
+
+.lado-form { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 24px; }
+.volver { display: inline-flex; align-items: center; gap: 8px; align-self: center; width: min(440px, 100%); margin-bottom: 18px; color: var(--gris); font-size: 14px; font-weight: 700; text-decoration: none; }
+.volver:hover { color: var(--tomate); }
+.girada { transform: rotate(180deg); width: 18px; height: 18px; }
+
+.tarjeta {
+  width: min(440px, 100%);
+  padding: 32px;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  background: #fff;
+  box-shadow: var(--sombra);
+}
+.tarjeta h1 { color: var(--tomate); font-size: 26px; line-height: 1.2; }
+.tarjeta > .d-sub { margin: 6px 0 20px; font-size: 14px; }
+
+.pestanas { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 20px; padding: 4px; border-radius: 10px; background: var(--crema-2); }
+.pestanas button { min-height: 38px; border: 0; border-radius: 8px; background: none; color: var(--gris); font-size: 14px; font-weight: 700; cursor: pointer; transition: background-color 0.15s ease, color 0.15s ease; }
+.pestanas button:hover { color: var(--texto); }
+.pestanas button[aria-selected='true'] { background: #fff; color: var(--texto); box-shadow: 0 2px 6px rgba(66, 43, 43, 0.12); }
+
+.form { display: grid; gap: 14px; }
+.form .d-btn { margin-top: 4px; min-height: 46px; font-size: 15px; }
+.con-boton { position: relative; display: block; }
+.con-boton input { padding-right: 46px; }
+.con-boton button {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: var(--gris);
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+.con-boton button:hover { background: var(--crema-2); color: var(--texto); }
+
+.demo { margin-top: 22px; padding-top: 18px; border-top: 1px dashed #e7dbcc; }
+.demo p { margin-bottom: 10px; color: var(--gris); font-size: 13px; }
+.demo b { color: var(--texto); }
+.demo code { padding: 1px 6px; border-radius: 5px; background: var(--crema-2); color: var(--texto); font-size: 12px; }
+.demo-botones { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+@media (max-width: 900px) {
+  .acceso { grid-template-columns: 1fr; }
+  .lado-foto { min-height: 0; padding: 20px 20px 26px; gap: 22px; }
+  .lema h2 { font-size: 28px; margin-bottom: 0; }
+  .lema ul { display: none; }
+  .lado-form { justify-content: flex-start; padding: 24px 16px 40px; }
+}
+@media (max-width: 480px) {
+  .tarjeta { padding: 22px 18px; }
+  .demo-botones { grid-template-columns: 1fr; }
+}

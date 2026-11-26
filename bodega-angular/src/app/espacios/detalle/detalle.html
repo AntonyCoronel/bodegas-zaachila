@@ -1,0 +1,110 @@
+<section class="detail-view">
+  <a routerLink="/espacios" class="back-link">← Regresar a los 4 espacios</a>
+  <p class="eyebrow">FICHA INDIVIDUAL · <span>{{ bodega()?.titulo ?? '4 espacios de alquiler' }}</span></p>
+
+  @if (cargando()) {
+    <div class="detail-panel cargando" aria-busy="true"><div class="detail-main">Cargando la ficha…</div></div>
+  } @else if (error()) {
+    <div class="detail-panel" role="alert"><div class="detail-main"><h1>No pudimos cargar la bodega</h1><p class="desc">{{ error() }}</p></div></div>
+  } @else if (!bodega()) {
+    <div class="detail-panel"><div class="detail-main"><h1>Esta bodega no existe</h1><p class="desc">Revisa el enlace o regresa al catálogo para ver los 4 espacios.</p><a class="button" routerLink="/espacios">Ver 4 espacios</a></div></div>
+  } @else {
+    @let u = bodega()!;
+    <div class="detail-layout">
+      <div>
+        <section class="photo-panel">
+          <img class="main-image" [src]="foto() === 'interior' ? fotoInterior(u.slug) : fotoReferencia(u.slug)"
+               [alt]="(foto() === 'interior' ? 'Imagen ilustrativa del interior' : 'Foto de referencia') + ' del ' + u.titulo">
+          <div class="photo-label"><b>{{ foto() === 'interior' ? 'Vista del interior' : 'Fotografía de referencia' }}</b><span>Imágenes ilustrativas</span></div>
+          <div class="thumb-row">
+            <button type="button" class="thumb" [class.active]="foto() === 'interior'" (click)="foto.set('interior')" aria-label="Mostrar interior">
+              <img [src]="fotoInterior(u.slug)" alt="Vista interior"><span>Ver interior</span>
+            </button>
+            <button type="button" class="thumb" [class.active]="foto() === 'referencia'" (click)="foto.set('referencia')" aria-label="Mostrar referencia">
+              <img [src]="fotoReferencia(u.slug)" alt="Foto de referencia"><span>Foto original de referencia</span>
+            </button>
+          </div>
+        </section>
+        <section class="detail-extra">
+          <h2>¿Qué puedes almacenar?</h2>
+          <ul>
+            @for (s of u.usos; track s) { <li>{{ s }}</li> }
+          </ul>
+        </section>
+      </div>
+
+      <div>
+        <section class="detail-panel">
+          <div class="detail-main">
+            <div class="detail-top"><span class="code">{{ u.id }}</span><span class="state" [class]="u.estado">{{ u.estado }}</span></div>
+            <h1>{{ u.titulo }}</h1>
+            <p class="detail-dims">{{ u.dimensiones }}</p>
+            <div class="detail-area"><span>Superficie total</span><strong>{{ u.m2 }} m²</strong></div>
+            <p class="detail-price">{{ u.precio | dinero }} <small>MXN al mes</small></p>
+            <hr class="line">
+            <div class="specs">
+              <div class="spec"><span>Identificación</span><b>{{ u.id }}</b></div>
+              <div class="spec"><span>Capacidad</span><b>{{ u.m2 }} m² de superficie</b></div>
+              <div class="spec"><span>Disponibilidad</span><b>{{ u.estado }}</b></div>
+              <div class="spec"><span>Cliente asignado</span><b>{{ clienteVisible(u) }}</b></div>
+            </div>
+            <p class="desc">{{ u.descripcion }}</p>
+            <div class="detail-action">
+              @if (esDueno()) {
+                <button type="button" class="button" (click)="abrirEdicion()">Editar bodega</button>
+              } @else if (u.estado === 'Disponible') {
+                <button type="button" class="button" (click)="solicitar(u)">Solicitar esta bodega</button>
+              } @else {
+                <button type="button" class="button" disabled>No disponible por ahora</button>
+              }
+              <a class="button outline" routerLink="/espacios">Ver 4 espacios</a>
+            </div>
+          </div>
+        </section>
+
+        <section class="detail-extra">
+          <h2>Información del espacio</h2>
+          <ul>
+            @for (t of u.detalles; track t) { <li>{{ t }}</li> }
+          </ul>
+        </section>
+
+        @if (editando()) {
+          <form class="edit-box" id="edit-form" (ngSubmit)="guardar()">
+            <h2>Actualizar datos de {{ u.id }}</h2>
+            <p>Los cambios se guardan en el sistema y se ven en el catálogo y en los paneles.</p>
+            <div class="edit-grid">
+              <label class="field">Precio mensual (MXN)
+                <input type="number" name="price" min="1" max="999999" step="1" [(ngModel)]="precio" required>
+              </label>
+              <label class="field">Estado
+                <select name="status" [(ngModel)]="estado">
+                  <option>Disponible</option>
+                  <option>Reservada</option>
+                  <option>Ocupada</option>
+                </select>
+              </label>
+              @if (estado !== 'Disponible') {
+                <label class="field full">Cliente asignado
+                  <select name="client" [(ngModel)]="clienteId" required>
+                    <option value="">Selecciona un cliente</option>
+                    @for (c of clientes(); track c.id) { <option [value]="c.id">{{ c.nombre }}</option> }
+                  </select>
+                </label>
+              }
+            </div>
+            <div class="form-actions">
+              <button class="button" type="submit" [disabled]="guardando()">{{ guardando() ? 'Guardando…' : 'Guardar cambios' }}</button>
+              <button class="button neutral" type="button" (click)="editando.set(false)">Cancelar</button>
+            </div>
+          </form>
+        }
+        <p class="note">Nota: son ejemplos de alquiler, no unidades reales publicadas. Las imágenes son de referencia y no representan medidas exactas.</p>
+      </div>
+    </div>
+  }
+</section>
+
+@if (aviso()) {
+  <div class="notification" role="status">{{ aviso() }}</div>
+}

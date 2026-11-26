@@ -1,0 +1,82 @@
+@if (!datos.listo()) {
+  <div class="d-card" aria-busy="true"><div class="esqueleto" style="height: 120px"></div></div>
+} @else {
+  <div class="arriba">
+  <section class="d-card saldos" aria-label="Saldos">
+      <div class="saldo">
+        <span>Cobrado en {{ mesActual }}</span>
+        <strong>{{ cobradoMes() | dinero }}</strong>
+      </div>
+      <div class="saldo">
+        <span>Pendiente, aún a tiempo</span>
+        <strong>{{ pendiente() | dinero }}</strong>
+      </div>
+      <div class="saldo" [class.mal]="vencido() > 0">
+        <span>Vencido</span>
+        <strong>{{ vencido() | dinero }}</strong>
+      </div>
+    </section>
+    <section class="d-card" aria-labelledby="t-graf">
+      <div class="d-card-head"><h2 id="t-graf">Ingresos cobrados por mes</h2></div>
+      <app-grafica-ingresos [datos]="ingresos()" />
+      <p class="d-sub total-seis">{{ totalSeis() | dinero }} cobrados en los últimos 6 meses. Las mensualidades se generan el día 10 de cada mes mientras el contrato está activo.</p>
+    </section>
+  </div>
+
+  <div class="abajo">
+    <section class="d-card" aria-labelledby="t-lista">
+      <div class="d-card-head lista-head">
+        <h2 id="t-lista">Mensualidades</h2>
+        <label class="buscar">
+          <app-icono nombre="buscar" />
+          <input type="search" placeholder="Buscar cliente, folio o bodega" [ngModel]="busqueda()" (ngModelChange)="busqueda.set($event)" aria-label="Buscar pagos">
+        </label>
+      </div>
+      <div class="filtros" role="group" aria-label="Filtrar pagos">
+        @for (f of filtros; track f) {
+          <button type="button" class="filtro" [attr.aria-pressed]="filtro() === f" (click)="filtro.set(f)">{{ etiqueta(f) }} <b>{{ cuenta(f) }}</b></button>
+        }
+      </div>
+
+      <div class="tabla-wrap">
+        <table class="d-tabla">
+          <thead><tr><th>Cliente</th><th>Concepto</th><th>Vence</th><th>Estado</th><th class="num">Monto</th><th></th></tr></thead>
+          <tbody>
+            @for (p of lista(); track p.id) {
+              <tr [class.fila-mal]="p.estado === 'Vencido'">
+                <td><span class="fuerte">{{ p.clienteNombre }}</span><div class="tenue">{{ p.bodegaId }} · {{ p.folio }}</div></td>
+                <td class="concepto">{{ p.concepto }}</td>
+                <td>
+                  {{ p.vence | fecha }}
+                  @if (p.estado === 'Vencido') { <div class="tenue rojo">hace {{ abs(dias(p.vence)) }} días</div> }
+                  @if (p.estado === 'Pagado') { <div class="tenue">pagado {{ p.pagadoEn | fecha: false }} · {{ p.metodo }}</div> }
+                </td>
+                <td><span class="pill" [class]="p.estado">{{ p.estado }}</span></td>
+                <td class="num fuerte">{{ p.monto | dinero }}</td>
+                <td class="num">
+                  @if (p.estado !== 'Pagado') {
+                    @if (registrando() === p.id) {
+                      <span class="registrar">
+                        <select [(ngModel)]="metodo" aria-label="Método de pago">
+                          <option>Efectivo</option><option>Transferencia</option><option>Tarjeta</option>
+                        </select>
+                        <button type="button" class="d-btn chico ok" (click)="registrar(p)" [disabled]="trabajando()">Confirmar</button>
+                        <button type="button" class="d-btn chico sec" (click)="registrando.set(null)" aria-label="Cancelar">×</button>
+                      </span>
+                    } @else {
+                      <button type="button" class="d-btn chico sec" (click)="abrir(p)">Registrar pago</button>
+                    }
+                  }
+                </td>
+              </tr>
+            } @empty {
+              <tr><td colspan="6"><div class="vacio"><strong>Sin pagos en esta vista</strong><p>Cambia el filtro o la búsqueda.</p></div></td></tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+
+  </div>
+}

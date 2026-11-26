@@ -1,0 +1,83 @@
+<div class="barra-filtros">
+  <div class="filtros" role="group" aria-label="Filtrar solicitudes">
+    @for (f of filtros; track f) {
+      <button type="button" class="filtro" [attr.aria-pressed]="filtro() === f" (click)="filtro.set(f)">
+        {{ etiqueta(f) }} <b>{{ cuenta(f) }}</b>
+      </button>
+    }
+  </div>
+</div>
+
+@if (!datos.listo()) {
+  <div class="d-card" aria-busy="true"><div class="esqueleto" style="height: 280px"></div></div>
+} @else {
+  <ul class="solicitudes">
+    @for (s of lista(); track s.id) {
+      @let b = bodega(s.bodegaId);
+      @let bloqueada = s.estado === 'Pendiente' && b?.estado !== 'Disponible';
+      <li class="d-card solicitud" [class.resuelta]="s.estado !== 'Pendiente'">
+        <div class="quien">
+          <div class="sol-top">
+            <h2>{{ s.clienteNombre }}</h2>
+            <span class="pill" [class]="s.estado">{{ s.estado }}</span>
+          </div>
+          <p class="contacto">
+            <a [href]="'tel:' + s.clienteTelefono.replaceAll(' ', '')"><app-icono nombre="telefono" />{{ s.clienteTelefono }}</a>
+            <a [href]="'mailto:' + s.clienteCorreo"><app-icono nombre="correo" />{{ s.clienteCorreo }}</a>
+          </p>
+          @if (s.mensaje) { <p class="mensaje">“{{ s.mensaje }}”</p> }
+          <p class="d-sub">Enviada el {{ s.creadaEn | fecha }}</p>
+        </div>
+
+        <dl class="que">
+          <div><dt>Bodega</dt><dd><span class="codigo">{{ s.bodegaId }}</span> {{ b?.titulo }}</dd></div>
+          <div><dt>Desde</dt><dd>{{ s.fechaInicio | fecha }}</dd></div>
+          <div><dt>Plazo</dt><dd>{{ s.meses }} {{ s.meses === 1 ? 'mes' : 'meses' }}</dd></div>
+          <div><dt>Total estimado</dt><dd>{{ (b?.precio ?? 0) * s.meses | dinero }}</dd></div>
+        </dl>
+
+        <div class="acciones">
+          @if (s.estado === 'Pendiente') {
+            @if (bloqueada) {
+              <p class="nota"><app-icono nombre="alerta" /><span>{{ b?.titulo }} ya está {{ b?.estado?.toLowerCase() }}. Recházala o libera la bodega primero.</span></p>
+            }
+            @if (rechazando() === s.id) {
+              <form class="rechazo" (ngSubmit)="rechazar(s)">
+                <label class="campo">
+                  <span>Motivo para el cliente <small>(opcional)</small></span>
+                  <textarea name="motivo" [(ngModel)]="motivo" maxlength="300" placeholder="Por ejemplo: ya no está disponible en esas fechas; te sugerimos otra bodega."></textarea>
+                </label>
+                <div class="botones">
+                  <button type="submit" class="d-btn" [disabled]="trabajando() === s.id">Rechazar solicitud</button>
+                  <button type="button" class="d-btn sec" (click)="rechazando.set(null)">Cancelar</button>
+                </div>
+              </form>
+            } @else {
+              <div class="botones">
+                <button type="button" class="d-btn ok" [disabled]="bloqueada || trabajando() === s.id" (click)="aprobar(s)">
+                  <app-icono nombre="check" /> {{ trabajando() === s.id ? 'Aprobando…' : 'Aprobar' }}
+                </button>
+                <button type="button" class="d-btn sec" (click)="abrirRechazo(s)"><app-icono nombre="cerrar" /> Rechazar</button>
+              </div>
+              <p class="d-sub ayuda">Al aprobar, la bodega queda reservada a su nombre y se genera su primera mensualidad.</p>
+            }
+          } @else if (s.respuesta) {
+            <p class="respuesta"><b>Tu respuesta:</b> {{ s.respuesta }}</p>
+          }
+        </div>
+      </li>
+    } @empty {
+      <li class="d-card">
+        <div class="vacio">
+          @if (filtro() === 'Pendiente') {
+            <strong>No hay solicitudes por revisar</strong>
+            <p>Cuando un cliente pida una bodega desde su panel, aparecerá aquí para que la apruebes o la rechaces.</p>
+          } @else {
+            <strong>Sin solicitudes en esta vista</strong>
+            <p>Prueba con otro filtro.</p>
+          }
+        </div>
+      </li>
+    }
+  </ul>
+}

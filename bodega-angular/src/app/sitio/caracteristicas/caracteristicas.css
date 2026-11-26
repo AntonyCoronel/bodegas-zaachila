@@ -1,0 +1,39 @@
+/* Estilos copiados de caracteristicas/caracteristicas.html. El menú superior vive en sitio-layout. */
+:host { display:block; --blue:#2175de; --ink:#142e44; --muted:#647582; --line:#e3eaf0; --white:#fff; }
+* { box-sizing:border-box; }
+:host { display:block; color:var(--ink); font-family:Arial,Helvetica,sans-serif; background:#fff; }
+.wrap { max-width:1240px; width:calc(100% - 96px); margin:auto; }
+.section { padding:75px 0; }
+.section-heading { display:flex; justify-content:space-between; gap:35px; align-items:flex-end; margin-bottom:38px; }
+.eyebrow { font-size:10px; letter-spacing:2px; font-weight:700; line-height:1.7; margin:0 0 15px; color:var(--blue); }
+h1 { font-size:42px; line-height:1.15; letter-spacing:-1.4px; margin:0; }
+.section-heading>p { color:var(--muted); font-size:14px; line-height:1.8; margin:0; }
+.cards { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:20px; }
+.card { grid-column:span 2; padding:30px; border:1px solid var(--line); border-radius:7px; position:relative; }
+.card:nth-last-child(-n+2) { grid-column:span 3; }
+.icon { display:grid; place-items:center; background:#edf5ff; color:var(--blue); font-size:27px; width:47px; height:47px; border-radius:8px; }
+.card-number { position:absolute; top:34px; right:27px; font-size:11px; color:#71838f; }
+.card h3 { font-size:19px; letter-spacing:-.4px; margin:25px 0 12px; }
+.card p { font-size:14px; color:var(--muted); line-height:1.85; margin:0 0 23px; }
+.tag { font-size:9px; letter-spacing:1.7px; color:#647582; }
+@media(max-width:1000px) {
+  .wrap { width:calc(100% - 56px); }
+  .section-heading { display:block; }
+  .section-heading>p { margin-top:22px; }
+  .cards { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .card, .card:nth-last-child(-n+2) { grid-column:auto; }
+  .card:last-child { grid-column:1/-1; }
+}
+@media(max-width:600px) {
+  .wrap { width:calc(100% - 40px); }
+  .section { padding:40px 0; }
+  .section-heading { margin-bottom:28px; }
+  h1 { font-size:33px; }
+  .eyebrow { font-size:9px; letter-spacing:1.5px; }
+  .cards { grid-template-columns:1fr; gap:14px; }
+  .card { padding:25px; }
+  .card h3 { font-size:19px; }
+}
+@media(max-width:800px) {
+  :host { display:block; }
+}

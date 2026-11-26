@@ -1,0 +1,7 @@
+:host { min-height: 0; background: none; }
+.state { display: inline-flex; }
+.esqueleto .card-img { background: linear-gradient(90deg, #efe9de, #f7f3ec, #efe9de); background-size: 200% 100%; animation: brillo 1.4s ease-in-out infinite; }
+.esqueleto .linea { height: 18px; border-radius: 6px; background: #f1ece3; margin-bottom: 12px; }
+.esqueleto .linea.corta { width: 45%; }
+.esqueleto .area { height: 46px; }
+@keyframes brillo { from { background-position: 100% 0; } to { background-position: -100% 0; } }

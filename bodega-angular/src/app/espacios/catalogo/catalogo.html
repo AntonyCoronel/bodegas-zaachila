@@ -1,0 +1,64 @@
+<section id="catalog-view">
+  <div class="intro">
+    <p class="eyebrow">ALQUILER DE BODEGAS</p>
+    <h1>Encuentra el <span class="intro-highlight">espacio ideal</span></h1>
+    <p>Cuatro espacios de diferentes tamaños. Consulta su superficie, precio y disponibilidad; entra a cada ficha para conocer el interior.</p>
+  </div>
+  <div class="stats">
+    <div class="stat-pill"><b>{{ bodegas().length || 4 }}</b> espacios</div>
+    <div class="stat-pill"><b>{{ cargando() ? '…' : disponibles() }}</b> disponibles</div>
+    <div class="stat-pill">Contratos mensuales · Demo</div>
+  </div>
+
+  @if (error()) {
+    <div class="info-strip" role="alert">
+      <div><strong>No pudimos cargar las bodegas</strong><p>{{ error() }}</p></div>
+    </div>
+  }
+
+  <div class="cards" aria-label="Cuatro bodegas en alquiler" [attr.aria-busy]="cargando()">
+    @for (u of bodegas(); track u.id) {
+      <article class="card">
+        <div class="card-img">
+          <img [src]="foto(u.slug)" [alt]="'Foto de referencia del ' + u.titulo" loading="lazy">
+          <span class="card-image-tag">Fotografía de referencia</span>
+        </div>
+        <div class="card-body">
+          <div class="card-head"><h2>{{ u.titulo }}</h2><span class="code">{{ u.id }}</span></div>
+          <div class="dims">{{ u.dimensiones }}</div>
+          <div class="area">{{ u.m2 }} m²</div>
+          <div class="uses-label">Ideal para</div>
+          <ul class="features">
+            @for (s of u.usos; track s) {
+              <li>{{ s }}</li>
+            }
+          </ul>
+          <div class="card-footer">
+            <div class="bottom-line">
+              <div class="price">{{ u.precio | dinero }} <small>/mes</small></div>
+              <span class="state" [class]="u.estado">{{ u.estado }}</span>
+            </div>
+            <a class="button" [routerLink]="['/espacios', u.slug]">Ver interior →</a>
+          </div>
+        </div>
+      </article>
+    } @empty {
+      @if (cargando()) {
+        @for (n of [1, 2, 3, 4]; track n) {
+          <article class="card esqueleto" aria-hidden="true">
+            <div class="card-img"></div>
+            <div class="card-body"><div class="linea"></div><div class="linea corta"></div><div class="area"></div></div>
+          </article>
+        }
+      }
+    }
+  </div>
+
+  <div class="info-strip">
+    <span class="info-icon" aria-hidden="true">ℹ️</span>
+    <div>
+      <strong>¿Quieres consultar una bodega?</strong>
+      <p>Selecciona «Ver interior». Desde su ficha puedes solicitarla con tu cuenta; si eres el dueño, también puedes cambiar el precio, la disponibilidad y el cliente asignado.</p>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,119 @@
+@if (!datos.listo()) {
+  <div class="rejilla dos" aria-busy="true">
+    <div class="d-card"><div class="esqueleto" style="height: 420px"></div></div>
+    <div class="d-card"><div class="esqueleto" style="height: 360px"></div></div>
+  </div>
+} @else {
+  <div class="rejilla dos">
+    <section class="d-card" aria-labelledby="t-elige">
+      <div class="d-card-head">
+        <h2 id="t-elige">Elige una bodega</h2>
+        <p>Las medidas del plano son reales</p>
+      </div>
+      <app-plano [bodegas]="datos.bodegas()" modo="cliente" [miBodegaId]="miBodegaId()" [seleccion]="elegida()" (elegir)="elegir($event)" />
+
+      <ul class="opciones" role="list">
+        @for (b of datos.bodegas(); track b.id) {
+          @let libre = b.estado === 'Disponible';
+          <li>
+            <button type="button" class="opcion" [class.activa]="elegida() === b.id" [disabled]="!libre"
+                    [attr.aria-pressed]="elegida() === b.id" (click)="elegir(b.id)">
+              <img [src]="foto(b.slug)" alt="" loading="lazy">
+              <span class="op-texto">
+                <strong>{{ b.titulo }}</strong>
+                <span>{{ b.dimensiones }} · {{ b.m2 }} m²</span>
+              </span>
+              <span class="op-precio">
+                <strong>{{ b.precio | dinero }}</strong><small>/mes</small>
+              </span>
+              @if (b.id === miBodegaId()) {
+                <span class="pill Reservado">Tuya</span>
+              } @else if (libre && pendienteDe(b.id)) {
+                <span class="pill Pendiente">Solicitada</span>
+              } @else {
+                <span class="pill" [class]="libre ? 'Disponible' : 'Finalizado'">{{ libre ? 'Disponible' : 'No disponible' }}</span>
+              }
+            </button>
+          </li>
+        }
+      </ul>
+    </section>
+
+    <section class="d-card formulario" aria-labelledby="t-form">
+      @if (seleccion(); as b) {
+        <div class="d-card-head"><h2 id="t-form">Solicitar {{ b.titulo.toLowerCase() }}</h2><a class="d-link" [routerLink]="ficha(b.slug)">Ver ficha</a></div>
+        <div class="resumen-b">
+          <span class="codigo">{{ b.id }}</span>
+          <span>{{ b.dimensiones }} · {{ b.m2 }} m²</span>
+          <strong>{{ b.precio | dinero }} /mes</strong>
+        </div>
+
+        @if (b.estado !== 'Disponible') {
+          <div class="nota"><app-icono nombre="info" /><span>Esta bodega no está disponible por ahora. Elige una marcada como disponible.</span></div>
+        } @else {
+          <form (ngSubmit)="enviar()" #f="ngForm">
+            <label class="campo">
+              <span>¿Desde cuándo la necesitas?</span>
+              <input type="date" name="fechaInicio" [(ngModel)]="fechaInicio" [min]="hoy" required>
+            </label>
+            <label class="campo">
+              <span>¿Por cuánto tiempo?</span>
+              <select name="meses" [(ngModel)]="meses">
+                @for (m of opcionesMeses; track m) { <option [ngValue]="m">{{ m }} {{ m === 1 ? 'mes' : 'meses' }}</option> }
+              </select>
+            </label>
+            <label class="campo">
+              <span>Mensaje para el dueño <small>(opcional)</small></span>
+              <textarea name="mensaje" [(ngModel)]="mensaje" maxlength="500" placeholder="Qué vas a guardar, si necesitas ayuda con la mudanza…"></textarea>
+            </label>
+
+            <div class="total">
+              <span>{{ b.precio | dinero }} × {{ meses }} {{ meses === 1 ? 'mes' : 'meses' }}</span>
+              <strong>{{ total() | dinero }}</strong>
+            </div>
+            <p class="d-sub">Es un estimado. No se cobra nada hasta que el dueño apruebe tu solicitud; después pagas mes a mes, empezando por el primero.</p>
+
+            @if (error()) { <p class="error-texto" role="alert">{{ error() }}</p> }
+            <button class="d-btn ancho" type="submit" [disabled]="enviando()">
+              <app-icono nombre="solicitud" /> {{ enviando() ? 'Enviando…' : 'Enviar solicitud' }}
+            </button>
+          </form>
+        }
+      } @else {
+        <div class="d-card-head"><h2 id="t-form">Tu solicitud</h2></div>
+        <div class="guia">
+          <ol>
+            <li><b>1</b><span>Elige una bodega libre en el plano o en la lista.</span></li>
+            <li><b>2</b><span>Indica desde cuándo y por cuántos meses la quieres.</span></li>
+            <li><b>3</b><span>El dueño la revisa. Si la aprueba, queda apartada a tu nombre y aparece en <a class="d-link" routerLink="/cliente">Mi bodega</a>.</span></li>
+          </ol>
+        </div>
+      }
+    </section>
+  </div>
+
+  <section class="d-card historial" aria-labelledby="t-hist">
+    <div class="d-card-head"><h2 id="t-hist">Mis solicitudes</h2><p>{{ datos.solicitudes().length }} en total</p></div>
+    @if (datos.solicitudes().length) {
+      <div class="tabla-wrap">
+        <table class="d-tabla">
+          <thead><tr><th>Enviada</th><th>Bodega</th><th>Inicio</th><th>Plazo</th><th>Estado</th><th>Respuesta del dueño</th></tr></thead>
+          <tbody>
+            @for (s of datos.solicitudes(); track s.id) {
+              <tr>
+                <td class="tenue">{{ s.creadaEn | fecha }}</td>
+                <td class="fuerte">{{ nombreBodega(s.bodegaId) }}</td>
+                <td>{{ s.fechaInicio | fecha }}</td>
+                <td>{{ s.meses }} {{ s.meses === 1 ? 'mes' : 'meses' }}</td>
+                <td><span class="pill" [class]="s.estado">{{ s.estado }}</span></td>
+                <td class="respuesta">{{ s.respuesta ?? 'Esperando respuesta' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <div class="vacio"><strong>Aún no has enviado solicitudes</strong><p>Cuando envíes una, aquí verás si el dueño la aprobó o rechazó, y su respuesta.</p></div>
+    }
+  </section>
+}

@@ -1,0 +1,41 @@
+.fila-activa td { background: #fff8f2; }
+.editor { position: sticky; top: 24px; }
+.ed-cabeza { display: flex; gap: 14px; align-items: center; margin-bottom: 18px; }
+.ed-cabeza img { width: 84px; height: 68px; flex: none; border-radius: 10px; object-fit: cover; }
+.ed-cabeza h2 { margin: 4px 0 2px; color: var(--tomate); font-size: 20px; }
+.ed-form { display: grid; gap: 16px; }
+.ed-acciones { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+
+.segmentos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 4px; border-radius: 10px; background: var(--crema-2); }
+.segmento {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 38px;
+  border-radius: 8px;
+  color: var(--gris);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+.segmento input { position: absolute; opacity: 0; pointer-events: none; }
+.segmento:has(input:focus-visible) { outline: 3px solid rgba(252, 138, 45, 0.55); outline-offset: 1px; }
+.segmento:hover { color: var(--texto); }
+.segmento.activo { background: #fff; box-shadow: 0 2px 6px rgba(66, 43, 43, 0.12); }
+.seg-Disponible.activo { color: var(--ok); }
+.seg-Reservada.activo { color: var(--aviso); }
+.seg-Ocupada.activo { color: var(--mal); }
+
+.contrato { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--linea); }
+.contrato h3 { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; font-size: 15px; }
+.contrato dl { display: grid; gap: 8px; margin-bottom: 14px; }
+.contrato dl div { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; }
+.contrato dt { color: var(--gris); }
+.contrato dd { font-weight: 700; text-align: right; }
+.pin { padding: 2px 8px; border-radius: 6px; background: var(--navy); color: #fff; letter-spacing: 0.2em; }
+.confirmar { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; }
+
+@media (max-width: 1100px) {
+  .editor { position: static; }
+}

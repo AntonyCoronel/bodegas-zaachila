@@ -1,0 +1,54 @@
+:host { display: block; }
+.lienzo { overflow-x: auto; margin: 0 -4px; padding: 0 4px; }
+.plano { display: block; width: 100%; min-width: 520px; height: auto; font-family: Arial, Helvetica, sans-serif; }
+/* Celular: plano girado y letras más grandes para que se lean sin hacer zoom. */
+.plano.vertical { min-width: 0; max-width: 400px; margin: 0 auto; }
+.vertical .texto-pasillo { font-size: 3.2px; }
+.vertical .texto-pasillo.sub { font-size: 2.8px; }
+.vertical .entrada text { font-size: 3.6px; }
+.vertical .t-codigo { font-size: 3.4px; }
+.vertical .t-area { font-size: 6.4px; }
+.vertical .t-medida, .vertical .t-estado, .vertical .t-nombre { font-size: 3.3px; }
+.vertical .escala text { font-size: 3.2px; }
+
+.pasillo { fill: #f6efe5; }
+.eje { stroke: #e3d5c3; stroke-width: 0.5; stroke-dasharray: 3 2.4; }
+.texto-pasillo { fill: #8a7a72; font-size: 2.9px; font-weight: 700; letter-spacing: 0.12em; }
+.texto-pasillo.sub { font-size: 2.6px; font-weight: 400; letter-spacing: 0.02em; }
+
+.entrada path { fill: none; stroke: #c42b34; stroke-width: 0.9; stroke-linecap: round; stroke-linejoin: round; }
+.entrada text { fill: #c42b34; font-size: 2.8px; font-weight: 700; }
+
+.muro { fill: none; stroke: #422b2b; stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; }
+
+.unidad { outline: none; }
+.unidad .piso { stroke: #422b2b; stroke-width: 0.8; transition: fill 0.2s ease, stroke 0.2s ease, stroke-width 0.2s ease; }
+.unidad .hueco { stroke: #fffaf0; stroke-width: 1.6; }
+.unidad .cortina { stroke: #422b2b; stroke-width: 0.45; stroke-dasharray: 1.2 0.9; }
+.unidad text { pointer-events: none; }
+.t-codigo { font-size: 2.7px; font-weight: 700; fill: #422b2b; opacity: 0.8; }
+.t-area { font-size: 5.2px; font-weight: 700; fill: #422b2b; }
+.t-medida { font-size: 2.7px; fill: #6f6260; }
+.t-estado { font-size: 2.6px; font-weight: 700; letter-spacing: 0.04em; }
+.t-nombre { font-size: 2.6px; fill: #422b2b; }
+
+.estado-Disponible .piso { fill: #dcf6e7; }
+.estado-Disponible .t-estado { fill: #14764f; }
+.estado-Reservada .piso { fill: #fff1cf; }
+.estado-Reservada .t-estado { fill: #8a560b; }
+.estado-Ocupada .piso { fill: #fee3e0; }
+.estado-Ocupada .t-estado { fill: #b03930; }
+
+/* Vista del cliente: su bodega en naranja, las que no puede pedir rayadas y sin nombres. */
+.cliente .bloqueada .piso { fill: url(#rayado); }
+.cliente .bloqueada .t-estado, .cliente .bloqueada .t-area { fill: #8a7a72; }
+.unidad.propia .piso { fill: #ffe7cf; stroke: #d9741f; stroke-width: 1.1; }
+.unidad.propia .t-estado { fill: #b85c12; }
+
+.unidad[role='button'] { cursor: pointer; }
+.unidad[role='button']:hover .piso, .unidad[role='button']:focus-visible .piso { stroke: #c42b34; stroke-width: 1.2; }
+.unidad.elegida .piso { stroke: #c42b34; stroke-width: 1.6; filter: drop-shadow(0 1.2px 1.6px rgba(196, 43, 52, 0.28)); }
+
+.escala text { font-size: 2.6px; fill: #6f6260; }
+.escala .lleno { fill: #422b2b; }
+.escala .vacio { fill: #fff; stroke: #422b2b; stroke-width: 0.35; }

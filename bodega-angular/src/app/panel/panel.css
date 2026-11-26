@@ -1,0 +1,268 @@
+/*
+ * Estilos compartidos de los dos paneles (cliente y dueño) y del inicio de sesión.
+ * Paleta tomada del sitio: azul marino del pie de página, crema, tomate, naranja y vainilla
+ * de las páginas de proyecto/, y los colores de estado del catálogo de espacios.
+ * Todo está bajo .dash para no afectar a las páginas del sitio.
+ */
+.dash {
+  --navy: #101b2d;
+  --navy-2: #1a2940;
+  --navy-texto: #c4ccd9;
+  --crema: #fffaf0;
+  --crema-2: #f8f0e3;
+  --tomate: #c42b34;
+  --tomate-2: #a3222a;
+  --naranja: #fc8a2d;
+  --naranja-suave: #ffe7cf;
+  --vainilla: #fce9ab;
+  --vainilla-suave: #fff6d9;
+  --texto: #422b2b;
+  --gris: #6f6260;
+  --linea: #efe4d6;
+  --borde: rgba(196, 43, 52, 0.08);
+  --sombra: 0 8px 25px rgba(66, 43, 43, 0.1);
+  --sombra-alta: 0 14px 34px rgba(66, 43, 43, 0.16);
+  --ok-fondo: #dcf6e7;
+  --ok: #14764f;
+  --aviso-fondo: #fff1cf;
+  --aviso: #8a560b;
+  --mal-fondo: #fee3e0;
+  --mal: #b03930;
+  --neutro-fondo: #efeae4;
+  --neutro: #5f5651;
+  --radio: 18px;
+  --radio-sm: 10px;
+
+  color: var(--texto);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+}
+.dash *, .dash *::before, .dash *::after { box-sizing: border-box; }
+.dash h1, .dash h2, .dash h3, .dash h4, .dash p, .dash ul, .dash ol, .dash dl, .dash dd, .dash figure { margin: 0; }
+.dash ul, .dash ol { padding: 0; list-style: none; }
+.dash a { color: inherit; }
+.dash button, .dash input, .dash select, .dash textarea { font: inherit; color: inherit; }
+.dash :focus-visible { outline: 3px solid rgba(252, 138, 45, 0.55); outline-offset: 2px; }
+.dash ::selection { background: var(--vainilla); color: var(--texto); }
+
+/* ---------- Tarjetas ---------- */
+.dash .d-card {
+  background: #fff;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  padding: 22px 24px;
+  min-width: 0;
+}
+.dash .d-card-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.dash .d-card-head h2 { color: var(--tomate); font-size: 18px; line-height: 1.25; }
+.dash .d-card-head p, .dash .d-sub { color: var(--gris); font-size: 13px; }
+.dash .d-link {
+  color: var(--tomate);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  text-underline-offset: 3px;
+}
+.dash .d-link:hover { text-decoration: underline; }
+
+/* ---------- Botones ---------- */
+.dash .d-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 10px 18px;
+  border: 1px solid var(--tomate);
+  border-radius: 8px;
+  background: var(--tomate);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.18s ease, border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+}
+.dash .d-btn:hover { background: var(--tomate-2); border-color: var(--tomate-2); transform: translateY(-1px); box-shadow: 0 6px 16px rgba(196, 43, 52, 0.22); }
+.dash .d-btn:active { transform: translateY(0); box-shadow: none; }
+.dash .d-btn.sec { background: #fff; color: var(--texto); border-color: #e3d6c8; }
+.dash .d-btn.sec:hover { background: var(--crema); border-color: #d4c3b1; box-shadow: none; }
+.dash .d-btn.ok { background: var(--ok); border-color: var(--ok); }
+.dash .d-btn.ok:hover { background: #0f5f3f; border-color: #0f5f3f; box-shadow: 0 6px 16px rgba(20, 118, 79, 0.2); }
+.dash .d-btn.chico { min-height: 34px; padding: 6px 12px; font-size: 13px; }
+.dash .d-btn.ancho { width: 100%; }
+.dash .d-btn:disabled, .dash .d-btn[aria-disabled='true'] { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+.dash .d-btn svg { width: 17px; height: 17px; flex: none; }
+
+/* ---------- Estados ---------- */
+.dash .pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  line-height: 1.4;
+}
+.dash .pill::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.dash .pill.Disponible, .dash .pill.Pagado, .dash .pill.Aprobada, .dash .pill.Activo { background: var(--ok-fondo); color: var(--ok); }
+.dash .pill.Reservada, .dash .pill.Pendiente, .dash .pill.Reservado { background: var(--aviso-fondo); color: var(--aviso); }
+.dash .pill.Ocupada, .dash .pill.Vencido, .dash .pill.Rechazada { background: var(--mal-fondo); color: var(--mal); }
+.dash .pill.Finalizado { background: var(--neutro-fondo); color: var(--neutro); }
+
+.dash .codigo {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 7px;
+  background: var(--crema-2);
+  color: var(--gris);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* ---------- Formularios ---------- */
+.dash .campo { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.dash .campo > span, .dash .campo > label { font-size: 13px; font-weight: 700; color: var(--texto); }
+.dash .campo small { color: var(--gris); font-size: 12px; font-weight: 400; }
+.dash .campo input, .dash .campo select, .dash .campo textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid rgba(66, 43, 43, 0.18);
+  border-radius: 8px;
+  background: var(--crema);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+.dash .campo textarea { min-height: 92px; resize: vertical; }
+.dash .campo input:hover, .dash .campo select:hover, .dash .campo textarea:hover { border-color: rgba(66, 43, 43, 0.3); }
+.dash .campo input:focus, .dash .campo select:focus, .dash .campo textarea:focus {
+  outline: none;
+  border-color: var(--naranja);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(252, 138, 45, 0.25);
+}
+.dash .campo input::placeholder, .dash .campo textarea::placeholder { color: #9a8d88; }
+.dash .campo.error input, .dash .campo.error select { border-color: var(--mal); }
+.dash .error-texto { color: var(--mal); font-size: 13px; font-weight: 700; }
+
+/* ---------- Tablas ---------- */
+.dash .tabla-wrap { overflow-x: auto; margin: 0 -24px; padding: 0 24px; }
+.dash table.d-tabla { width: 100%; border-collapse: collapse; font-size: 14px; }
+.dash .d-tabla th {
+  padding: 0 12px 10px;
+  border-bottom: 1px solid var(--linea);
+  color: var(--gris);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.dash .d-tabla td { padding: 13px 12px; border-bottom: 1px solid var(--linea); vertical-align: middle; }
+.dash .d-tabla tr:last-child td { border-bottom: 0; }
+.dash .d-tabla tbody tr { transition: background-color 0.15s ease; }
+.dash .d-tabla tbody tr:hover { background: #fffcf6; }
+.dash .d-tabla th:first-child, .dash .d-tabla td:first-child { padding-left: 0; }
+.dash .d-tabla th:last-child, .dash .d-tabla td:last-child { padding-right: 0; }
+.dash .d-tabla .num { text-align: right; white-space: nowrap; }
+.dash .d-tabla .fuerte { font-weight: 700; }
+.dash .d-tabla .tenue { color: var(--gris); font-size: 13px; }
+
+/* ---------- Filtros (pestañas) ---------- */
+.dash .filtros { display: flex; flex-wrap: wrap; gap: 6px; }
+.dash .filtro {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 13px;
+  border: 1px solid #e8dccd;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--gris);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.dash .filtro:hover { color: var(--texto); border-color: #d6c6b4; }
+.dash .filtro[aria-pressed='true'] { background: var(--navy); border-color: var(--navy); color: #fff; }
+.dash .filtro b { font-size: 12px; padding: 0 6px; border-radius: 999px; background: var(--crema-2); color: var(--texto); }
+.dash .filtro[aria-pressed='true'] b { background: rgba(255, 255, 255, 0.16); color: #fff; }
+
+/* ---------- Vacíos, avisos y esqueletos ---------- */
+.dash .vacio { padding: 26px 8px; text-align: center; color: var(--gris); }
+.dash .vacio strong { display: block; color: var(--texto); font-size: 16px; margin-bottom: 6px; }
+.dash .vacio p { max-width: 46ch; margin: 0 auto 14px; }
+.dash .nota {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 12px 14px;
+  border-radius: var(--radio-sm);
+  background: var(--vainilla-suave);
+  color: #5c4a2a;
+  font-size: 13px;
+}
+.dash .nota svg { width: 18px; height: 18px; flex: none; margin-top: 1px; color: #a0730f; }
+.dash .nota.mal { background: var(--mal-fondo); color: #7d2620; }
+.dash .nota.mal svg { color: var(--mal); }
+.dash .esqueleto {
+  border-radius: 8px;
+  background: linear-gradient(90deg, #f3ece2, #faf6f0, #f3ece2);
+  background-size: 200% 100%;
+  animation: dash-brillo 1.4s ease-in-out infinite;
+}
+@keyframes dash-brillo { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+
+/* ---------- Toast ---------- */
+.dash-toast {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: min(420px, calc(100vw - 32px));
+  padding: 13px 16px;
+  border-radius: 12px;
+  background: #101b2d;
+  color: #fff;
+  font: 700 14px/1.4 Arial, Helvetica, sans-serif;
+  box-shadow: 0 12px 30px rgba(16, 27, 45, 0.3);
+  animation: dash-entrar 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.dash-toast.error { background: #7d2620; }
+.dash-toast svg { width: 18px; height: 18px; flex: none; }
+.dash-toast button { margin-left: auto; padding: 2px 6px; border: 0; background: none; color: inherit; opacity: 0.7; cursor: pointer; font-size: 18px; line-height: 1; }
+@keyframes dash-entrar { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* ---------- Cuadrículas de página ---------- */
+.dash .rejilla { display: grid; gap: 22px; }
+.dash .rejilla.dos { grid-template-columns: minmax(0, 1.65fr) minmax(300px, 1fr); align-items: start; }
+.dash .pila { display: grid; gap: 22px; align-content: start; }
+
+@media (max-width: 1100px) {
+  .dash .rejilla.dos { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .dash .d-card { padding: 18px; border-radius: 16px; }
+  .dash .tabla-wrap { margin: 0 -18px; padding: 0 18px; }
+  .dash-toast { right: 16px; left: 16px; bottom: 84px; }
+}

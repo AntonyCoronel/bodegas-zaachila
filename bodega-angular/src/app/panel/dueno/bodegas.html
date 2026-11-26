@@ -1,0 +1,120 @@
+@if (!datos.listo()) {
+  <div class="rejilla dos" aria-busy="true">
+    <div class="d-card"><div class="esqueleto" style="height: 460px"></div></div>
+    <div class="d-card"><div class="esqueleto" style="height: 380px"></div></div>
+  </div>
+} @else {
+  <div class="rejilla dos">
+    <div class="pila">
+      <section class="d-card" aria-labelledby="t-plano">
+        <div class="d-card-head"><h2 id="t-plano">Plano</h2><p>Elige una bodega para editarla</p></div>
+        <app-plano [bodegas]="datos.bodegas()" modo="dueno" [seleccion]="elegida()" (elegir)="elegir($event)" />
+      </section>
+
+      <section class="d-card" aria-labelledby="t-tabla">
+        <div class="d-card-head"><h2 id="t-tabla">Las 4 bodegas</h2></div>
+        <div class="tabla-wrap">
+          <table class="d-tabla">
+            <thead><tr><th>Bodega</th><th>Medidas</th><th class="num">Precio</th><th>Estado</th><th>Cliente</th><th></th></tr></thead>
+            <tbody>
+              @for (b of datos.bodegas(); track b.id) {
+                @let c = contratoDe(b.id);
+                <tr [class.fila-activa]="elegida() === b.id">
+                  <td><span class="codigo">{{ b.id }}</span><div class="fuerte">{{ b.titulo }}</div></td>
+                  <td class="tenue nw">{{ b.dimensiones }}<div>{{ b.m2 }} m²</div></td>
+                  <td class="num fuerte">{{ b.precio | dinero }}</td>
+                  <td><span class="pill" [class]="b.estado">{{ b.estado }}</span></td>
+                  <td>
+                    @if (b.clienteNombre) {
+                      <span class="fuerte">{{ b.clienteNombre.replace(' (ejemplo)', '') }}</span>
+                      @if (c) { <div class="tenue">{{ c.estado === 'Reservado' ? 'Entra el' : 'Hasta el' }} {{ (c.estado === 'Reservado' ? c.inicio : c.fin) | fecha }}</div> }
+                    } @else { <span class="tenue">Sin cliente</span> }
+                  </td>
+                  <td class="num"><button type="button" class="d-btn chico sec" (click)="elegir(b.id)">Editar</button></td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <section class="d-card editor" aria-labelledby="t-editor">
+      @if (bodega(); as b) {
+        <div class="ed-cabeza">
+          <img [src]="foto(b.slug)" alt="">
+          <div>
+            <span class="codigo">{{ b.id }}</span>
+            <h2 id="t-editor">{{ b.titulo }}</h2>
+            <p class="d-sub">{{ b.dimensiones }} · {{ b.m2 }} m² · <a class="d-link" [routerLink]="ficha(b.slug)">Ficha pública</a></p>
+          </div>
+        </div>
+
+        <form (ngSubmit)="guardar()" class="ed-form">
+          <label class="campo">
+            <span>Precio mensual (MXN)</span>
+            <input type="number" name="precio" min="1" step="1" [(ngModel)]="precio" required>
+          </label>
+          <div class="campo">
+            <span id="l-estado">Estado</span>
+            <div class="segmentos" role="radiogroup" aria-labelledby="l-estado">
+              @for (e of ['Disponible', 'Reservada', 'Ocupada']; track e) {
+                <label class="segmento" [class]="'seg-' + e" [class.activo]="estado === e">
+                  <input type="radio" name="estado" [value]="e" [(ngModel)]="estado">{{ e }}
+                </label>
+              }
+            </div>
+          </div>
+          @if (estado !== 'Disponible') {
+            <label class="campo">
+              <span>Cliente asignado</span>
+              <select name="cliente" [(ngModel)]="clienteId" required>
+                <option value="">Selecciona un cliente</option>
+                @for (c of datos.clientes(); track c.id) { <option [value]="c.id">{{ c.nombre }}</option> }
+              </select>
+              @if (clienteId && clienteId !== (b.clienteId ?? '')) {
+                <small>Se crea un contrato nuevo de 1 mes desde hoy con su primera mensualidad. Para otro plazo, usa una solicitud.</small>
+              }
+            </label>
+          } @else if (b.estado !== 'Disponible') {
+            <div class="nota"><app-icono nombre="info" /><span>Al guardar como Disponible se finaliza el contrato de {{ b.clienteNombre }} y se libera la bodega.</span></div>
+          }
+          @if (error()) { <p class="error-texto" role="alert">{{ error() }}</p> }
+          <div class="ed-acciones">
+            <button class="d-btn" type="submit" [disabled]="guardando() || !cambiado()">{{ guardando() ? 'Guardando…' : 'Guardar cambios' }}</button>
+          </div>
+        </form>
+
+        @if (contrato(); as c) {
+          <div class="contrato">
+            <h3>Contrato {{ c.id }} <span class="pill" [class]="c.estado">{{ c.estado }}</span></h3>
+            <dl>
+              <div><dt>Cliente</dt><dd>{{ c.clienteNombre }}</dd></div>
+              <div><dt>Vigencia</dt><dd>{{ c.inicio | fecha }} – {{ c.fin | fecha }}</dd></div>
+              <div><dt>Mensualidad</dt><dd>{{ c.precioMensual | dinero }}</dd></div>
+              <div><dt>Código de acceso</dt><dd><span class="pin">{{ c.codigoAcceso }}</span></dd></div>
+            </dl>
+            <div class="ed-acciones">
+              @if (c.estado === 'Reservado') {
+                <button type="button" class="d-btn ok chico" (click)="activar(c)"><app-icono nombre="llave" /> Entregar y marcar ocupada</button>
+              }
+              @if (!confirmarFin()) {
+                <button type="button" class="d-btn sec chico" (click)="confirmarFin.set(true)">Finalizar contrato</button>
+              } @else {
+                <span class="confirmar">¿Finalizar y liberar la bodega?
+                  <button type="button" class="d-btn chico" (click)="finalizar(c)">Sí, finalizar</button>
+                  <button type="button" class="d-btn sec chico" (click)="confirmarFin.set(false)">No</button>
+                </span>
+              }
+            </div>
+          </div>
+        }
+      } @else {
+        <div class="vacio">
+          <strong>Elige una bodega</strong>
+          <p>Tócala en el plano o usa «Editar» en la tabla para cambiar su precio, su estado o el cliente asignado.</p>
+        </div>
+      }
+    </section>
+  </div>
+}

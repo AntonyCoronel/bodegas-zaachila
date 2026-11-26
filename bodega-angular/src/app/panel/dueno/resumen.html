@@ -1,0 +1,108 @@
+@if (!datos.listo()) {
+  <div class="rejilla dos" aria-busy="true">
+    <div class="d-card"><div class="esqueleto" style="height: 380px"></div></div>
+    <div class="pila"><div class="d-card"><div class="esqueleto" style="height: 220px"></div></div><div class="d-card"><div class="esqueleto" style="height: 150px"></div></div></div>
+  </div>
+} @else {
+  <div class="rejilla dos">
+    <section class="d-card" aria-labelledby="t-edificio">
+      <div class="d-card-head">
+        <h2 id="t-edificio">El edificio hoy</h2>
+        <p>{{ ocupadas().length }} de {{ datos.bodegas().length }} bodegas rentadas · {{ m2Ocupados() }} de {{ m2Totales() }} m²</p>
+      </div>
+      <app-plano [bodegas]="datos.bodegas()" modo="dueno" (elegir)="abrirBodega($event)" />
+      <ul class="unidades">
+        @for (b of datos.bodegas(); track b.id) {
+          @let c = contratoDe(b.id);
+          <li>
+            <button type="button" (click)="abrirBodega(b.id)">
+              <span class="codigo">{{ b.id }}</span>
+              <span class="u-cliente">
+                @if (b.clienteNombre) { <strong>{{ sinEjemplo(b.clienteNombre) }}</strong> } @else { <strong class="libre">Libre</strong> }
+                <small>
+                  @if (c) { {{ c.estado === 'Reservado' ? 'Entra el' : 'Hasta el' }} {{ (c.estado === 'Reservado' ? c.inicio : c.fin) | fecha }} }
+                  @else { {{ b.precio | dinero }} /mes }
+                </small>
+              </span>
+              <span class="pill" [class]="b.estado">{{ b.estado }}</span>
+            </button>
+          </li>
+        }
+      </ul>
+    </section>
+
+    <div class="pila">
+      <section class="d-card" aria-labelledby="t-atender">
+        <div class="d-card-head"><h2 id="t-atender">Por atender</h2>
+          @if (totalPendientes()) { <p>{{ totalPendientes() }} {{ totalPendientes() === 1 ? 'asunto' : 'asuntos' }}</p> }
+        </div>
+        @if (totalPendientes()) {
+          <ul class="tareas">
+            @for (s of pendientes(); track s.id) {
+              <li>
+                <span class="t-icono aviso"><app-icono nombre="solicitud" /></span>
+                <div class="t-texto">
+                  <strong>{{ sinEjemplo(s.clienteNombre) }} quiere {{ nombreBodega(s.bodegaId).toLowerCase() }}</strong>
+                  <span>Desde {{ s.fechaInicio | fecha }} · {{ s.meses }} {{ s.meses === 1 ? 'mes' : 'meses' }}</span>
+                </div>
+                <a class="d-btn chico" routerLink="/dueno/solicitudes">Revisar</a>
+              </li>
+            }
+            @for (p of vencidos(); track p.id) {
+              <li>
+                <span class="t-icono mal"><app-icono nombre="alerta" /></span>
+                <div class="t-texto">
+                  <strong>{{ sinEjemplo(p.clienteNombre) }} debe {{ p.monto | dinero }}</strong>
+                  <span>{{ p.concepto }} · venció hace {{ abs(dias(p.vence)) }} días</span>
+                </div>
+                <a class="d-btn chico sec" routerLink="/dueno/pagos" [queryParams]="{ filtro: 'Vencido' }">Ver pago</a>
+              </li>
+            }
+            @for (c of porIniciar(); track c.id) {
+              <li>
+                <span class="t-icono info"><app-icono nombre="llave" /></span>
+                <div class="t-texto">
+                  <strong>{{ sinEjemplo(c.clienteNombre) }} recibe <span class="nw">{{ c.bodegaId }}</span></strong>
+                  <span>{{ dias(c.inicio) > 0 ? 'El ' : 'Desde el ' }}{{ c.inicio | fecha }} · entrega llaves y código</span>
+                </div>
+                <button type="button" class="d-btn chico sec" (click)="activar(c)">Marcar ocupada</button>
+              </li>
+            }
+          </ul>
+        } @else {
+          <div class="al-dia"><span class="ok-icono"><app-icono nombre="check" /></span><div><strong>Nada pendiente</strong><p>No hay solicitudes por revisar ni pagos vencidos.</p></div></div>
+        }
+      </section>
+
+      <section class="d-card" aria-labelledby="t-mes">
+        <div class="d-card-head"><h2 id="t-mes">Así va {{ mesActual }}</h2></div>
+        <dl class="libro">
+          <div><dt>Cobrado este mes</dt><dd>{{ cobradoMes() | dinero }}</dd></div>
+          <div><dt>Por cobrar</dt><dd [class.rojo]="vencidos().length">{{ porCobrar() | dinero }}</dd></div>
+          <div><dt>Renta mensual contratada</dt><dd>{{ rentaMensual() | dinero }}</dd></div>
+        </dl>
+        <a class="d-link" routerLink="/dueno/pagos">Ver todos los pagos →</a>
+      </section>
+    </div>
+  </div>
+
+  <div class="rejilla dos abajo">
+    <section class="d-card" aria-labelledby="t-ingresos">
+      <div class="d-card-head"><h2 id="t-ingresos">Ingresos cobrados por mes</h2><p>Últimos 6 meses</p></div>
+      <app-grafica-ingresos [datos]="ingresos()" />
+    </section>
+    <section class="d-card" aria-labelledby="t-recientes">
+      <div class="d-card-head"><h2 id="t-recientes">Solicitudes recientes</h2><a class="d-link" routerLink="/dueno/solicitudes">Ver todas →</a></div>
+      <ul class="recientes">
+        @for (s of recientes(); track s.id) {
+          <li>
+            <div><strong>{{ sinEjemplo(s.clienteNombre) }}</strong><span class="d-sub">{{ nombreBodega(s.bodegaId) }} · {{ s.creadaEn | fecha }}</span></div>
+            <span class="pill" [class]="s.estado">{{ s.estado }}</span>
+          </li>
+        } @empty {
+          <li class="d-sub">Todavía no hay solicitudes.</li>
+        }
+      </ul>
+    </section>
+  </div>
+}
