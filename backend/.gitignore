@@ -1,0 +1,10 @@
+# Compilación de .NET
+bin/
+obj/
+.vs/
+*.user
+
+# Base de datos SQLite local (se crea sola al arrancar la API)
+*.db
+*.db-shm
+*.db-wal

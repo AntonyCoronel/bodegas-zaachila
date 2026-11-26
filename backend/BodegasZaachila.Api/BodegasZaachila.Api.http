@@ -1,0 +1,102 @@
+# Peticiones de prueba (VS Code con REST Client o Visual Studio).
+# La colección completa, con pruebas automáticas, está en backend/postman/BodegaSegura.postman_collection.json
+# 1) Ejecuta "Entrar como dueño" y "Entrar como cliente" y copia cada token en las variables de abajo.
+
+@base = http://localhost:3000
+@tokenDueno = pega-aqui-el-token-del-dueno
+@tokenCliente = pega-aqui-el-token-de-maria
+
+### Bienvenida (lista de rutas)
+GET {{base}}/
+
+### Entrar como dueño
+POST {{base}}/api/auth/login
+Content-Type: application/json
+
+{ "correo": "dueno@ejemplo.com", "password": "demo123" }
+
+### Entrar como cliente (María)
+POST {{base}}/api/auth/login
+Content-Type: application/json
+
+{ "correo": "maria@ejemplo.com", "password": "demo123" }
+
+### Crear cuenta de cliente
+POST {{base}}/api/auth/registro
+Content-Type: application/json
+
+{ "nombre": "Pedro Ruiz", "correo": "pedro@ejemplo.com", "telefono": "951 000 0099", "password": "secreto1" }
+
+### Quién soy
+GET {{base}}/api/auth/yo
+Authorization: Bearer {{tokenCliente}}
+
+### Bodegas (público: sin datos de clientes)
+GET {{base}}/api/bodegas
+
+### Bodegas como dueño (con cliente asignado)
+GET {{base}}/api/bodegas
+Authorization: Bearer {{tokenDueno}}
+
+### Cliente: solicitar una bodega (fecha desde hoy)
+POST {{base}}/api/solicitudes
+Authorization: Bearer {{tokenCliente}}
+Content-Type: application/json
+
+{ "bodegaId": "BOD-004", "fechaInicio": "2026-12-15", "meses": 3, "mensaje": "Mercancía de temporada." }
+
+### Solicitudes (dueño: todas · cliente: las suyas)
+GET {{base}}/api/solicitudes
+Authorization: Bearer {{tokenDueno}}
+
+### Dueño: aprobar solicitud
+POST {{base}}/api/solicitudes/SOL-0002/aprobar
+Authorization: Bearer {{tokenDueno}}
+Content-Type: application/json
+
+{ "respuesta": "" }
+
+### Dueño: rechazar solicitud
+POST {{base}}/api/solicitudes/SOL-0002/rechazar
+Authorization: Bearer {{tokenDueno}}
+Content-Type: application/json
+
+{ "respuesta": "Por ahora no tenemos ese espacio." }
+
+### Contratos
+GET {{base}}/api/contratos
+Authorization: Bearer {{tokenDueno}}
+
+### Dueño: activar contrato (entrega de la bodega)
+POST {{base}}/api/contratos/CON-0004/activar
+Authorization: Bearer {{tokenDueno}}
+
+### Dueño: finalizar contrato
+POST {{base}}/api/contratos/CON-0002/finalizar
+Authorization: Bearer {{tokenDueno}}
+
+### Pagos (dueño: todos · cliente: los suyos)
+GET {{base}}/api/pagos
+Authorization: Bearer {{tokenCliente}}
+
+### Pagar (cliente dueño del pago, o dueño)
+POST {{base}}/api/pagos/PAG-0017/pagar
+Authorization: Bearer {{tokenCliente}}
+Content-Type: application/json
+
+{ "metodo": "Tarjeta" }
+
+### Dueño: editar bodega
+PATCH {{base}}/api/bodegas/BOD-001
+Authorization: Bearer {{tokenDueno}}
+Content-Type: application/json
+
+{ "precio": 549, "estado": "Ocupada", "clienteId": "u-ana" }
+
+### Dueño: clientes
+GET {{base}}/api/clientes
+Authorization: Bearer {{tokenDueno}}
+
+### Dueño: restaurar datos de ejemplo
+POST {{base}}/api/demo/reiniciar
+Authorization: Bearer {{tokenDueno}}
