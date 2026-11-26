@@ -65,6 +65,21 @@
 .demo b { color: var(--texto); }
 .demo code { padding: 1px 6px; border-radius: 5px; background: var(--crema-2); color: var(--texto); font-size: 12px; }
 .demo-botones { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.demo-botones.una { grid-template-columns: 1fr; }
+.rol-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 12px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: var(--vainilla);
+  color: #6b4f14;
+  font-size: 12px;
+  font-weight: 700;
+}
+.rol-chip app-icono { width: 16px; height: 16px; }
+.cambiar-rol { margin-top: 18px; color: var(--gris); font-size: 13px; text-align: center; }
 
 @media (max-width: 900px) {
   .acceso { grid-template-columns: 1fr; }

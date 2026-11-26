@@ -8,6 +8,36 @@
                 <a class="accion accion-secundaria" routerLink="/" fragment="tamanos">Ver tamaños disponibles</a>
             </div>
         </div>
+
+        <!-- Elegir tipo de cuenta: cliente (renta una bodega) o dueño (administra) -->
+        <aside class="elegir" aria-labelledby="elegir-titulo">
+            @if (usuario(); as u) {
+                <h2 id="elegir-titulo">Hola, {{ primerNombre() }}</h2>
+                <p class="elegir-sub">Entraste como {{ u.rol === 'dueno' ? 'dueño' : 'cliente' }}. ¿A dónde quieres ir?</p>
+            } @else {
+                <h2 id="elegir-titulo">¿Cómo quieres entrar?</h2>
+                <p class="elegir-sub">Elige tu tipo de cuenta para ir a tu panel.</p>
+            }
+            <button type="button" class="opcion" (click)="elegir('cliente')">
+                <span class="opcion-icono"><app-icono nombre="bodega" /></span>
+                <span class="opcion-texto">
+                    <strong>Soy cliente</strong>
+                    <span>{{ rol() === 'cliente' ? 'Ir a mi bodega, pagos y solicitudes' : 'Quiero rentar una bodega o ya rento una' }}</span>
+                </span>
+                <app-icono nombre="flecha" class="opcion-flecha" />
+            </button>
+            <button type="button" class="opcion" (click)="elegir('dueno')">
+                <span class="opcion-icono"><app-icono nombre="llave" /></span>
+                <span class="opcion-texto">
+                    <strong>Soy dueño</strong>
+                    <span>{{ rol() === 'dueno' ? 'Ir al panel de administración' : 'Administrar bodegas, solicitudes y pagos' }}</span>
+                </span>
+                <app-icono nombre="flecha" class="opcion-flecha" />
+            </button>
+            @if (!usuario()) {
+                <p class="elegir-nota">¿Primera vez? Como cliente puedes crear tu cuenta en un minuto.</p>
+            }
+        </aside>
     </div>
 </section>
 <main class="promocion" id="inicio">

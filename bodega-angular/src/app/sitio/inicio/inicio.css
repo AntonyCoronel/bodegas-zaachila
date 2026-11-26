@@ -27,6 +27,53 @@
 .accion-primaria { background: var(--blue); }
 .accion-secundaria { border-color: rgba(255, 255, 255, .45); background: rgba(255, 255, 255, .16); }
 .accion:hover, .accion:focus-visible { transform: translateY(-2px); }
+
+/* Selector de tipo de cuenta (cliente o dueño), a la derecha del texto del hero. */
+.contenido { justify-content: space-between; gap: 48px; }
+.texto { flex: 1 1 auto; }
+.elegir {
+    flex: 0 0 360px;
+    display: grid;
+    gap: 12px;
+    padding: 28px;
+    border-radius: 14px;
+    background: var(--white);
+    box-shadow: 0 18px 40px rgba(4, 20, 49, .35);
+    color: #16243a;
+}
+.elegir h2 { color: #111820; font-size: 22px; line-height: 1.2; }
+.elegir-sub { margin-bottom: 6px; color: #4b5a70; font-size: 15px; line-height: 1.4; }
+.opcion {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    padding: 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    background: #f7f8fa;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color .18s ease, background-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+.opcion:hover, .opcion:focus-visible { border-color: var(--blue); background: var(--white); box-shadow: 0 6px 18px rgba(20, 96, 244, .14); transform: translateY(-1px); }
+.opcion:focus-visible { outline: 3px solid rgba(20, 96, 244, .35); outline-offset: 2px; }
+.opcion-icono { display: grid; place-items: center; width: 46px; height: 46px; border-radius: 10px; background: #dceaff; color: var(--blue); }
+.opcion-icono app-icono { width: 24px; height: 24px; }
+.opcion-texto { display: grid; gap: 3px; }
+.opcion-texto strong { color: #111820; font-size: 17px; }
+.opcion-texto span { color: #4b5a70; font-size: 14px; line-height: 1.35; }
+.opcion-flecha { width: 20px; height: 20px; color: #8a96a8; transition: transform .18s ease, color .18s ease; }
+.opcion:hover .opcion-flecha, .opcion:focus-visible .opcion-flecha { color: var(--blue); transform: translateX(3px); }
+.elegir-nota { margin-top: 4px; color: #4b5a70; font-size: 13px; }
+
+@media (max-width: 960px) {
+    .contenido { flex-direction: column; align-items: stretch; justify-content: center; }
+    .elegir { flex: none; width: 100%; max-width: 460px; }
+}
 .promocion { min-height: calc(100vh - 88px); background: var(--orange); padding: 0 32px 28px; text-align: center; }
 .promocion h1 { color: var(--white); font-size: clamp(40px, 5vw, 64px); line-height: 1.05; padding-top: 0; margin-bottom: 10px; }
 .promocion > p { color: var(--white); font-size: 19px; margin-bottom: 42px; }

@@ -15,13 +15,28 @@
     <a routerLink="/" class="volver"><app-icono nombre="flecha" class="girada" /> Volver al sitio</a>
 
     <div class="tarjeta">
-      <h1>{{ modo() === 'entrar' ? 'Entra a tu cuenta' : 'Crea tu cuenta' }}</h1>
-      <p class="d-sub">{{ modo() === 'entrar' ? 'Clientes y dueño entran por aquí; cada quien llega a su panel.' : 'Para solicitar una bodega y pagar tus mensualidades.' }}</p>
+      @if (rolElegido()) {
+        <span class="rol-chip"><app-icono [nombre]="rolElegido() === 'dueno' ? 'llave' : 'bodega'" /> {{ rolElegido() === 'dueno' ? 'Cuenta de dueño' : 'Cuenta de cliente' }}</span>
+      }
+      <h1>
+        @if (modo() === 'registro') { Crea tu cuenta }
+        @else if (rolElegido() === 'dueno') { Entra como dueño }
+        @else if (rolElegido() === 'cliente') { Entra como cliente }
+        @else { Entra a tu cuenta }
+      </h1>
+      <p class="d-sub">
+        @if (modo() === 'registro') { Para solicitar una bodega y pagar tus mensualidades. }
+        @else if (rolElegido() === 'dueno') { Administra tus bodegas, solicitudes y pagos. }
+        @else if (rolElegido() === 'cliente') { Revisa tu bodega, paga tu mensualidad o solicita una bodega. }
+        @else { Clientes y dueño entran por aquí; cada quien llega a su panel. }
+      </p>
 
-      <div class="pestanas" role="tablist" aria-label="Elegir acción">
-        <button type="button" role="tab" [attr.aria-selected]="modo() === 'entrar'" (click)="cambiarModo('entrar')">Entrar</button>
-        <button type="button" role="tab" [attr.aria-selected]="modo() === 'registro'" (click)="cambiarModo('registro')">Crear cuenta</button>
-      </div>
+      @if (rolElegido() !== 'dueno') {
+        <div class="pestanas" role="tablist" aria-label="Elegir acción">
+          <button type="button" role="tab" [attr.aria-selected]="modo() === 'entrar'" (click)="cambiarModo('entrar')">Entrar</button>
+          <button type="button" role="tab" [attr.aria-selected]="modo() === 'registro'" (click)="cambiarModo('registro')">Crear cuenta</button>
+        </div>
+      }
 
       <form (ngSubmit)="enviar()" class="form">
         @if (modo() === 'registro') {
@@ -53,15 +68,28 @@
       @if (demo) {
         <div class="demo">
           <p><b>Cuentas de ejemplo</b> (backend simulado, contraseña <code>demo123</code>)</p>
-          <div class="demo-botones">
-            <button type="button" class="d-btn sec" (click)="usarDemo('maria@ejemplo.com')" [disabled]="enviando()">
-              <app-icono nombre="usuario" /> Entrar como cliente
-            </button>
-            <button type="button" class="d-btn sec" (click)="usarDemo('dueno@ejemplo.com')" [disabled]="enviando()">
-              <app-icono nombre="llave" /> Entrar como dueño
-            </button>
+          <div class="demo-botones" [class.una]="rolElegido()">
+            @if (rolElegido() !== 'dueno') {
+              <button type="button" class="d-btn sec" (click)="usarDemo('maria@ejemplo.com')" [disabled]="enviando()">
+                <app-icono nombre="usuario" /> Entrar como cliente
+              </button>
+            }
+            @if (rolElegido() !== 'cliente') {
+              <button type="button" class="d-btn sec" (click)="usarDemo('dueno@ejemplo.com')" [disabled]="enviando()">
+                <app-icono nombre="llave" /> Entrar como dueño
+              </button>
+            }
           </div>
         </div>
+      }
+
+      @if (rolElegido()) {
+        <p class="cambiar-rol">
+          {{ rolElegido() === 'dueno' ? '¿Eres cliente?' : '¿Eres el dueño?' }}
+          <a class="d-link" routerLink="/login" [queryParams]="{ rol: rolElegido() === 'dueno' ? 'cliente' : 'dueno' }" (click)="cambiarModo('entrar')">
+            {{ rolElegido() === 'dueno' ? 'Entra como cliente' : 'Entra como dueño' }}
+          </a>
+        </p>
       }
     </div>
   </main>

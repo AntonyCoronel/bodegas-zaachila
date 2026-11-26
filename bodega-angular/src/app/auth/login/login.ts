@@ -1,4 +1,4 @@
-import { Component, inject, input, signal } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { mensajeDeError } from '../../core/api.service';
@@ -17,6 +17,9 @@ import { Icono } from '../../panel/icono/icono';
 export class Login {
   /** ?volver=/cliente/rentar regresa a donde estaba después de entrar. */
   readonly volver = input<string | undefined>();
+  /** ?rol=cliente | dueno viene del selector de la página principal. */
+  readonly rol = input<string | undefined>();
+  protected rolElegido = computed(() => (this.rol() === 'dueno' || this.rol() === 'cliente' ? this.rol() : null) as 'cliente' | 'dueno' | null);
 
   private auth = inject(AuthService);
   private datos = inject(DatosService);
