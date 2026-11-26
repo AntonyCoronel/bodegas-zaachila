@@ -7,9 +7,11 @@ si algo de aquí no queda claro, ahí está la lógica exacta.
 
 ## Cómo conectar el backend real
 
-1. Levanten su servidor (por ejemplo en `http://localhost:3000`) con las rutas de abajo bajo el prefijo `/api`.
-2. En `src/app/core/api-config.ts` cambien `useMockBackend` a `false`.
-3. Con `npm start`, Angular reenvía `/api/*` a `http://localhost:3000` (archivo `proxy.conf.json`). Si su puerto es otro, cámbienlo ahí.
+El backend ya existe en `backend/` (.NET 10, ver `backend/README.md`).
+
+1. Levanten el servidor: `dotnet run --project backend/BodegasZaachila.Api` (escucha en `http://localhost:3000`).
+2. En `bodega-angular/`, corran `npm run start:backend`. Esa configuración reemplaza `api-config.ts` por `api-config.backend.ts` (`useMockBackend: false`), así que no hay que editar código.
+3. Angular reenvía `/api/*` a `http://localhost:3000` (archivo `proxy.conf.json`). Si el puerto cambia, cámbienlo ahí.
    Si el backend vive en otro dominio en producción, pongan la URL completa en `baseUrl` y habiliten CORS para el dominio del front.
 
 ## Reglas generales

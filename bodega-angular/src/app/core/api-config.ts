@@ -8,6 +8,7 @@
  *   Cuando el backend esté listo, cámbialo a `false`. Nada más cambia en la app.
  *
  * El contrato completo de la API está en API.md.
+ * Para usar el backend real sin editar este archivo: `npm run start:backend` (usa api-config.backend.ts).
  */
 export const API_CONFIG = {
   baseUrl: '/api',

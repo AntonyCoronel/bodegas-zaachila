@@ -8,7 +8,8 @@ uno para el **cliente** que renta una bodega y otro para el **dueño**.
 ```bash
 cd bodega-angular
 npm install --registry=https://registry.yarnpkg.com   # en redes donde npmjs.org no responde
-npm start                                             # abre http://localhost:4200
+npm start                                             # abre http://localhost:4200 con datos de ejemplo
+npm run start:backend                                 # igual, pero conectado al backend real (puerto 3000)
 ```
 
 Para generar la versión de producción: `npm run build` (queda en `dist/bodega-angular/browser`).
@@ -44,7 +45,8 @@ un backend simulado responde las mismas rutas con datos de ejemplo guardados en 
 - Cuentas de ejemplo (contraseña `demo123`): `maria@ejemplo.com` (cliente) y `dueno@ejemplo.com` (dueño).
   En la pantalla de entrar hay botones para usarlas.
 - En el panel del dueño, «Restaurar datos de ejemplo» regresa todo al inicio.
-- **Para conectar el backend real** y ver todas las rutas y reglas: [API.md](API.md).
+- **Con el backend real** (carpeta `backend/` del repo, .NET 10): en una terminal `dotnet run --project backend/BodegasZaachila.Api` desde la raíz del repo, y en otra `npm run start:backend` dentro de `bodega-angular/`. No hay que editar código: esa configuración usa `api-config.backend.ts` y el proxy manda `/api` a `http://localhost:3000`. Con el backend real no aparecen los botones de cuentas de ejemplo; entra escribiendo `maria@ejemplo.com` o `dueno@ejemplo.com` con `demo123`.
+- Todas las rutas y reglas de la API: [API.md](API.md).
 
 Todos los clientes, precios y pagos son ficticios (proyecto escolar).
 

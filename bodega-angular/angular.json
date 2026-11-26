@@ -73,6 +73,17 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "backend": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/app/core/api-config.ts",
+                  "with": "src/app/core/api-config.backend.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -85,6 +96,9 @@
             },
             "development": {
               "buildTarget": "bodega-angular:build:development"
+            },
+            "backend": {
+              "buildTarget": "bodega-angular:build:backend"
             }
           },
           "defaultConfiguration": "development",
