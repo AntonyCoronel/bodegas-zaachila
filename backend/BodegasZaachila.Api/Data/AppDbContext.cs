@@ -5,45 +5,62 @@ namespace BodegasZaachila.Api.Data;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
+    public DbSet<Usuario> Usuarios => Set<Usuario>();
     public DbSet<Bodega> Bodegas => Set<Bodega>();
     public DbSet<Solicitud> Solicitudes => Set<Solicitud>();
+    public DbSet<Contrato> Contratos => Set<Contrato>();
+    public DbSet<Pago> Pagos => Set<Pago>();
+    public DbSet<Secuencia> Secuencias => Set<Secuencia>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Bodega>(bodega =>
+        modelBuilder.Entity<Usuario>(e =>
         {
-            bodega.HasIndex(b => b.Codigo).IsUnique();
-            bodega.Property(b => b.Codigo).HasMaxLength(20);
-            bodega.Property(b => b.Nombre).HasMaxLength(80);
-
-            // SQLite no tiene tipo decimal: se guarda como REAL para poder ordenar y comparar precios.
-            bodega.Property(b => b.Precio).HasConversion<double>();
-
-            // Los enums se guardan como texto ("Disponible") para que la BD sea legible.
-            bodega.Property(b => b.Estado).HasConversion<string>().HasMaxLength(20);
-
-            // El cliente vive en la misma tabla (columnas ClienteNombre, ClienteTelefono, ClienteCorreo).
-            bodega.OwnsOne(b => b.Cliente, cliente =>
-            {
-                cliente.Property(c => c.Nombre).HasColumnName("ClienteNombre").HasMaxLength(90);
-                cliente.Property(c => c.Telefono).HasColumnName("ClienteTelefono").HasMaxLength(25);
-                cliente.Property(c => c.Correo).HasColumnName("ClienteCorreo").HasMaxLength(100);
-            });
-
-            // Una bodega con solicitudes no se puede borrar (el controlador responde 409).
-            bodega.HasMany(b => b.Solicitudes)
-                  .WithOne(s => s.Bodega)
-                  .HasForeignKey(s => s.BodegaId)
-                  .OnDelete(DeleteBehavior.Restrict);
+            e.HasKey(u => u.Id);
+            e.HasIndex(u => u.Correo).IsUnique();
+            e.Property(u => u.Id).HasMaxLength(40);
+            e.Property(u => u.Nombre).HasMaxLength(100);
+            e.Property(u => u.Correo).HasMaxLength(120);
+            e.Property(u => u.Telefono).HasMaxLength(30);
+            e.Property(u => u.Rol).HasConversion<string>().HasMaxLength(10);
         });
 
-        modelBuilder.Entity<Solicitud>(solicitud =>
+        modelBuilder.Entity<Bodega>(e =>
         {
-            solicitud.Property(s => s.Estado).HasConversion<string>().HasMaxLength(20);
-            solicitud.Property(s => s.Nombre).HasMaxLength(90);
-            solicitud.Property(s => s.Telefono).HasMaxLength(25);
-            solicitud.Property(s => s.Correo).HasMaxLength(100);
-            solicitud.Property(s => s.Mensaje).HasMaxLength(1000);
+            e.HasKey(b => b.Id);
+            e.HasIndex(b => b.Slug).IsUnique();
+            e.Property(b => b.Estado).HasConversion<string>().HasMaxLength(12);
+            e.HasOne(b => b.Cliente).WithMany().HasForeignKey(b => b.ClienteId).OnDelete(DeleteBehavior.Restrict);
         });
+
+        modelBuilder.Entity<Solicitud>(e =>
+        {
+            e.HasKey(s => s.Id);
+            e.Property(s => s.Estado).HasConversion<string>().HasMaxLength(12);
+            e.Property(s => s.Mensaje).HasMaxLength(500);
+            e.HasOne(s => s.Cliente).WithMany().HasForeignKey(s => s.ClienteId).OnDelete(DeleteBehavior.Restrict);
+            e.HasOne<Bodega>().WithMany().HasForeignKey(s => s.BodegaId).OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<Contrato>(e =>
+        {
+            e.HasKey(c => c.Id);
+            e.Property(c => c.Estado).HasConversion<string>().HasMaxLength(12);
+            e.Property(c => c.CodigoAcceso).HasMaxLength(4);
+            e.HasOne(c => c.Cliente).WithMany().HasForeignKey(c => c.ClienteId).OnDelete(DeleteBehavior.Restrict);
+            e.HasOne<Bodega>().WithMany().HasForeignKey(c => c.BodegaId).OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<Pago>(e =>
+        {
+            e.HasKey(p => p.Id);
+            e.HasIndex(p => p.Folio).IsUnique();
+            e.Property(p => p.Estado).HasConversion<string>().HasMaxLength(12);
+            e.Property(p => p.Metodo).HasConversion<string>().HasMaxLength(15);
+            e.Property(p => p.Periodo).HasMaxLength(7);
+            e.HasOne(p => p.Contrato).WithMany().HasForeignKey(p => p.ContratoId).OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<Secuencia>().HasKey(s => s.Nombre);
     }
 }

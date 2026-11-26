@@ -1,26 +1,28 @@
-# Backend — API de Bodegas Seguras Zaachila
+# Backend — API de Bodega Segura Zaachila
 
-API REST en **.NET 10** con **Entity Framework Core y SQLite**. Guarda las bodegas y las solicitudes de cotización que hoy viven en el `localStorage` de `bodegas_zaachila/assets/js/data.js`. Se prueba con **Postman**.
+API REST en **.NET 10** con **Entity Framework Core y SQLite** para la app Angular de la rama `angular-dashboards` (`bodega-angular/`).
 
-La API tiene dos partes, igual que el sitio:
+Implementa el contrato de [`bodega-angular/API.md`](https://github.com/AntonyCoronel/bodegas-zaachila/blob/angular-dashboards/bodega-angular/API.md): las mismas rutas, modelos, reglas y mensajes que el backend simulado (`src/app/core/mock/mock-backend.interceptor.ts`), con los mismos datos de ejemplo.
 
-| Parte | Páginas del sitio | Rutas de la API |
+La app tiene dos paneles y la API respeta los dos roles:
+
+| Rol | Panel | Qué puede hacer |
 |---|---|---|
-| **Usuarios** | `bodegas_zaachila/index.html` (catálogo y cotización), `bodegas_zaachila/bodega.html?id=N` (ficha) | `/api/...` |
-| **Administración** | `bodegas_zaachila/dashboard.html` | `/api/admin/...` |
+| `cliente` (usuarios) | `/cliente` | Ver su bodega, su contrato y su código de acceso; solicitar una bodega libre; pagar sus mensualidades |
+| `dueno` (administración) | `/dueno` | Aprobar o rechazar solicitudes, activar y finalizar contratos, editar bodegas, registrar pagos y ver clientes |
 
-La parte de usuarios **no devuelve datos de clientes**. El cliente asignado a cada bodega solo aparece en `/api/admin/...`.
-
-Esta carpeta es solo el backend: no cambia el diseño ni los archivos del sitio.
+Sin sesión solo se ven las bodegas, sin datos de clientes. Un cliente nunca recibe nombres ni códigos de otros clientes.
 
 ```
 backend/
-├─ BodegasZaachila.Api/          API (controladores, modelos, EF Core, SQLite)
-│  ├─ Controllers/Usuarios/      catálogo, ficha, empresa y cotización
-│  ├─ Controllers/Admin/         resumen, bodegas, solicitudes y restaurar demo
+├─ BodegasZaachila.Api/
+│  ├─ Controllers/        auth, bodegas, solicitudes, contratos, pagos, clientes y demo
+│  ├─ Models/             entidades (Usuario, Bodega, Solicitud, Contrato, Pago)
+│  ├─ Data/               AppDbContext y DatosEjemplo (los mismos de mock-db.ts)
+│  ├─ Servicios/          reglas compartidas, fechas, token JWT y vistas con privacidad
 │  └─ BodegasZaachila.Api.http   peticiones para VS Code (REST Client) o Visual Studio
-├─ postman/BodegasZaachila.postman_collection.json
-└─ BodegasZaachila.slnx          solución para Visual Studio / Rider
+├─ postman/BodegaSegura.postman_collection.json
+└─ BodegasZaachila.slnx
 ```
 
 ## Requisitos
@@ -36,76 +38,83 @@ Desde la raíz del repositorio:
 dotnet run --project backend/BodegasZaachila.Api
 ```
 
-- La API queda en **http://localhost:5080**. `GET /` devuelve la lista de rutas.
-- La primera vez crea `backend/BodegasZaachila.Api/bodegas.db` con las 4 bodegas demo de `data.js` (BOD-001 a BOD-004). El archivo `.db` no se sube a git.
-- El documento OpenAPI está en http://localhost:5080/openapi/v1.json. Las rutas salen agrupadas en "Usuarios" y "Administración".
+- Escucha en **http://localhost:3000**, el puerto que ya usa `bodega-angular/proxy.conf.json`.
+- La primera vez crea `backend/BodegasZaachila.Api/bodega-segura.db` con los datos de ejemplo. El `.db` no se sube a git.
+- `GET /` lista las rutas. El documento OpenAPI está en http://localhost:3000/openapi/v1.json.
+
+Cuentas de prueba (contraseña `demo123`): `dueno@ejemplo.com` (dueño) y `maria@ejemplo.com` (cliente). También existen `juan@`, `ana@`, `comercial@` y `luis@ejemplo.com`.
+
+## Conectar la app Angular
+
+1. Levanta la API (arriba).
+2. En `bodega-angular/src/app/core/api-config.ts` cambia `useMockBackend` a `false`.
+3. En otra terminal:
+
+   ```powershell
+   cd bodega-angular
+   npm install --registry=https://registry.yarnpkg.com
+   npm start
+   ```
+
+4. Abre http://localhost:4200. Angular reenvía `/api/*` a `http://localhost:3000`, así que no hace falta CORS.
+
+Si la app llama a la API con la URL completa (`baseUrl: 'http://localhost:3000/api'`), agrega su origen en `Cors:Origenes` de `appsettings.json`. `http://localhost:4200` ya está.
 
 ## Probar con Postman
 
-1. En Postman: **Import** → selecciona `backend/postman/BodegasZaachila.postman_collection.json`.
-2. Con la API en marcha, abre la colección y usa **Run collection**: 28 peticiones con 54 pruebas automáticas.
-3. La primera petición restaura los datos demo, así que puedes correrla las veces que quieras.
-4. La URL está en la variable `baseUrl` de la colección (`http://localhost:5080`).
+1. En Postman: **Import** → `backend/postman/BodegaSegura.postman_collection.json`.
+2. Con la API en marcha, usa **Run collection**: 52 peticiones con 106 pruebas automáticas.
+3. La primera carpeta entra como dueño y restaura los datos de ejemplo. Los tokens se guardan solos en `tokenDueno` y `tokenCliente`.
+4. La última petición vuelve a restaurar los datos, así la app queda como al principio.
 
-## Endpoints
+## Rutas
 
-### Usuarios
+| Método | Ruta | Quién | Cuerpo | Respuesta |
+|---|---|---|---|---|
+| POST | `/api/auth/login` | público | `{ correo, password }` | `{ token, usuario }` · 401 |
+| POST | `/api/auth/registro` | público | `{ nombre, correo, telefono, password }` | 201 `{ token, usuario }` (rol `cliente`) · 400 · 409 |
+| GET | `/api/auth/yo` | con sesión | — | `Usuario` |
+| GET | `/api/bodegas` | público | — | `Bodega[]` |
+| GET | `/api/bodegas/{id}` | público | — | `Bodega` · 404 |
+| PATCH | `/api/bodegas/{id}` | dueño | `{ precio?, estado?, clienteId? }` | `Bodega` · 400 · 404 |
+| GET | `/api/solicitudes` | con sesión | — | dueño: todas · cliente: las suyas |
+| POST | `/api/solicitudes` | cliente | `{ bodegaId, fechaInicio, meses, mensaje }` | 201 `Solicitud` · 400 · 404 · 409 |
+| POST | `/api/solicitudes/{id}/aprobar` | dueño | `{ respuesta? }` | `{ solicitud, contrato }` · 409 |
+| POST | `/api/solicitudes/{id}/rechazar` | dueño | `{ respuesta? }` | `{ solicitud }` · 409 |
+| GET | `/api/contratos` | con sesión | — | dueño: todos · cliente: los suyos |
+| POST | `/api/contratos/{id}/activar` | dueño | `{}` | `Contrato` · 409 |
+| POST | `/api/contratos/{id}/finalizar` | dueño | `{}` | `Contrato` · 409 |
+| GET | `/api/pagos` | con sesión | — | dueño: todos · cliente: los suyos |
+| POST | `/api/pagos/{id}/pagar` | cliente dueño del pago, o dueño | `{ metodo }` | `Pago` · 400 · 403 · 409 |
+| GET | `/api/clientes` | dueño | — | `Cliente[]` |
+| POST | `/api/demo/reiniciar` | dueño | — | `{ ok: true }` |
 
-| Método | Ruta | Uso en el sitio | Respuestas |
-|---|---|---|---|
-| GET | `/api/empresa` | Teléfono, correo, dirección y WhatsApp | 200 |
-| GET | `/api/bodegas?estado=Disponible` | Catálogo (`index.html`); el filtro es opcional | 200, 400 |
-| GET | `/api/bodegas/{id}` | Ficha (`bodega.html?id=N`) | 200, 404 |
-| POST | `/api/solicitudes` | Formulario "Solicita una cotización" | 201, 400 |
+`/api/demo/reiniciar` no es parte del contrato. Se deja para el botón «Restaurar datos de ejemplo» y para Postman.
 
-### Administración
+## Reglas (las de API.md)
 
-| Método | Ruta | Uso en `dashboard.html` | Respuestas |
-|---|---|---|---|
-| GET | `/api/admin/resumen` | Tarjetas: bodegas por estado, renta estimada y solicitudes por estado | 200 |
-| GET | `/api/admin/bodegas?estado=Ocupada` | Tabla de bodegas con cliente asignado | 200, 400 |
-| GET | `/api/admin/bodegas/{id}` | Abrir el modal de edición | 200, 404 |
-| POST | `/api/admin/bodegas` | Alta de una bodega (el código BOD-00N se genera solo) | 201, 400, 409 |
-| PUT | `/api/admin/bodegas/{id}` | Guardar el modal de edición | 200, 400, 404, 409 |
-| DELETE | `/api/admin/bodegas/{id}` | Eliminar una bodega | 204, 404, 409 si tiene solicitudes |
-| GET | `/api/admin/solicitudes?estado=&bodegaId=` | Tabla de solicitudes, la más reciente primero | 200, 400 |
-| GET | `/api/admin/solicitudes/{id}` | Detalle de una solicitud | 200, 404 |
-| PATCH | `/api/admin/solicitudes/{id}/estado` | Selector de estado: `{ "estado": "Contactado" }` | 200, 400, 404 |
-| DELETE | `/api/admin/solicitudes/{id}` | Eliminar una solicitud | 204, 404 |
-| POST | `/api/admin/demo/reset` | Botón "Restaurar demo" | 200 |
+- **Sesión:** el token es un JWT que la app manda como `Authorization: Bearer <token>`. Dura 7 días (`Jwt:HorasDeValidez`). Las contraseñas se guardan con hash.
+- **Solicitar:** la bodega debe estar `Disponible` (409), la fecha desde hoy, de 1 a 24 meses, y sin otra solicitud `Pendiente` del mismo cliente para esa bodega (409).
+- **Aprobar:** se crea un contrato `Reservado` (precio actual, código de 4 dígitos al azar), la bodega pasa a `Reservada` y se genera el primer pago `Pendiente`.
+- **Activar:** `Reservado` → `Activo` y la bodega pasa a `Ocupada`. **Finalizar:** `Finalizado` y la bodega vuelve a `Disponible`.
+- **Editar bodega:** `Disponible` finaliza el contrato vigente. `Reservada` u `Ocupada` exigen `clienteId`: con el mismo cliente solo cambia el estado del contrato; con otro se crea un contrato de 1 mes desde hoy con su primer pago.
+- **Pagar:** solo pagos no pagados (409). Si el contrato está `Activo` y no ha terminado, se genera la mensualidad del mes siguiente (vence el día 10).
+- **Vencido:** un pago `Pendiente` cuya fecha de vencimiento ya pasó se responde como `Vencido`.
+- **Fechas:** días `AAAA-MM-DD`, momentos `AAAA-MM-DDTHH:mm:ss`, periodos `AAAA-MM`. "Hoy" se calcula con la zona `ZonaHoraria` (`America/Mexico_City`).
+- **Errores:** siempre `{ "mensaje": "..." }` en español, con 400, 401, 403, 404 o 409.
 
-## Reglas de negocio (las mismas de `data.js`)
+## Configuración
 
-- Estados de una bodega: `Disponible`, `Reservada` u `Ocupada`.
-- Una bodega Reservada u Ocupada **requiere un cliente**. Si pasa a Disponible, el cliente se borra.
-- El volumen debe ser mayor que 0 y el precio no puede ser negativo.
-- Solo se aceptan solicitudes de bodegas **Disponibles**. Nombre, teléfono y correo son obligatorios.
-- Estados de una solicitud: `Pendiente`, `Contactado` o `Cerrado`.
-
-Los errores usan el formato ProblemDetails con los mensajes en español:
-
-```json
-{
-  "title": "Hay errores de validación",
-  "status": 400,
-  "errors": { "cliente": ["Asigna un cliente a la bodega reservada u ocupada"] }
-}
-```
-
-## Conectar las páginas del sitio
-
-- El JSON usa los mismos nombres de campo que `data.js` (`codigo`, `nombre`, `volumen`, `precio`, `estado`, `cliente`, `imagen`, `contenido`...).
-- `imagen` trae la misma ruta que `data.js` (`assets/images/bodega-mini.png`), relativa a la carpeta `bodegas_zaachila/`.
-- Ejemplo desde `index.html`:
-
-  ```js
-  const bodegas = await fetch('http://localhost:5080/api/bodegas').then(r => r.json());
-  ```
-
-- **CORS:** la API acepta llamadas desde Live Server de VS Code (`http://127.0.0.1:5500` y `http://localhost:5500`) y desde `http://localhost:4200`. Si sirves el sitio en otra dirección, agrégala en `Cors:Origenes` de `appsettings.json`. Abrir el HTML con doble clic (`file://`) no sirve para llamar a la API.
+| Clave en `appsettings.json` | Para qué |
+|---|---|
+| `ConnectionStrings:Bodegas` | Archivo SQLite (`bodega-segura.db`) |
+| `Jwt:Clave` | Clave para firmar los tokens. `appsettings.Development.json` trae una **solo para desarrollo**. En producción ponla como variable de entorno `Jwt__Clave` (mínimo 32 caracteres). Si falta, se genera una al azar al arrancar y las sesiones se pierden al reiniciar |
+| `Jwt:HorasDeValidez` | Duración de la sesión (168 h = 7 días) |
+| `ZonaHoraria` | Zona para calcular "hoy" |
+| `Cors:Origenes` | Sitios que pueden llamar a la API desde el navegador sin proxy |
 
 ## Notas
 
-- **Sin login.** Las rutas de administración están separadas pero abiertas: cualquiera que llegue a la API puede usarlas. Antes de publicarla hay que proteger `/api/admin` (por ejemplo, con JWT o una clave).
 - `UseAppHost=false` en el `.csproj`: `dotnet run` ejecuta la DLL con `dotnet.exe` y no genera un `.exe` propio, que Smart App Control de Windows puede bloquear.
-- Para empezar con datos limpios, borra `bodegas.db` o llama a `POST /api/admin/demo/reset`.
+- Para empezar con datos limpios, borra `bodega-segura.db` o llama a `POST /api/demo/reiniciar` con la sesión del dueño.
+- Todos los clientes, precios y pagos de ejemplo son ficticios (proyecto escolar).

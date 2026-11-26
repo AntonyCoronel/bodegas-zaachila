@@ -1,121 +1,102 @@
-# Peticiones de prueba para la API (VS Code con REST Client o Visual Studio).
-# Las mismas peticiones, con pruebas automáticas, están en backend/postman/BodegasZaachila.postman_collection.json
+# Peticiones de prueba (VS Code con REST Client o Visual Studio).
+# La colección completa, con pruebas automáticas, está en backend/postman/BodegaSegura.postman_collection.json
+# 1) Ejecuta "Entrar como dueño" y "Entrar como cliente" y copia cada token en las variables de abajo.
 
-@base = http://localhost:5080
+@base = http://localhost:3000
+@tokenDueno = pega-aqui-el-token-del-dueno
+@tokenCliente = pega-aqui-el-token-de-maria
 
-### Bienvenida (lista de endpoints de usuarios y de administración)
+### Bienvenida (lista de rutas)
 GET {{base}}/
 
-# =====================================================================
-# USUARIOS: páginas públicas (catálogo, ficha y cotización)
-# =====================================================================
+### Entrar como dueño
+POST {{base}}/api/auth/login
+Content-Type: application/json
 
-### Datos de la empresa
-GET {{base}}/api/empresa
+{ "correo": "dueno@ejemplo.com", "password": "demo123" }
 
-### Catálogo de bodegas (sin datos de clientes)
+### Entrar como cliente (María)
+POST {{base}}/api/auth/login
+Content-Type: application/json
+
+{ "correo": "maria@ejemplo.com", "password": "demo123" }
+
+### Crear cuenta de cliente
+POST {{base}}/api/auth/registro
+Content-Type: application/json
+
+{ "nombre": "Pedro Ruiz", "correo": "pedro@ejemplo.com", "telefono": "951 000 0099", "password": "secreto1" }
+
+### Quién soy
+GET {{base}}/api/auth/yo
+Authorization: Bearer {{tokenCliente}}
+
+### Bodegas (público: sin datos de clientes)
 GET {{base}}/api/bodegas
 
-### Solo bodegas disponibles
-GET {{base}}/api/bodegas?estado=Disponible
+### Bodegas como dueño (con cliente asignado)
+GET {{base}}/api/bodegas
+Authorization: Bearer {{tokenDueno}}
 
-### Ficha de una bodega
-GET {{base}}/api/bodegas/1
-
-### Solicitar cotización (la bodega debe estar Disponible)
+### Cliente: solicitar una bodega (fecha desde hoy)
 POST {{base}}/api/solicitudes
+Authorization: Bearer {{tokenCliente}}
 Content-Type: application/json
 
-{
-  "bodegaId": 1,
-  "nombre": "Juan Pérez",
-  "telefono": "951 123 4567",
-  "correo": "juan@example.com",
-  "mensaje": "Quiero guardar cajas por 3 meses."
-}
+{ "bodegaId": "BOD-004", "fechaInicio": "2026-12-15", "meses": 3, "mensaje": "Mercancía de temporada." }
 
-### Error 400: bodega Reservada
-POST {{base}}/api/solicitudes
+### Solicitudes (dueño: todas · cliente: las suyas)
+GET {{base}}/api/solicitudes
+Authorization: Bearer {{tokenDueno}}
+
+### Dueño: aprobar solicitud
+POST {{base}}/api/solicitudes/SOL-0002/aprobar
+Authorization: Bearer {{tokenDueno}}
 Content-Type: application/json
 
-{
-  "bodegaId": 2,
-  "nombre": "Ana",
-  "telefono": "951 000 0000",
-  "correo": "ana@example.com"
-}
+{ "respuesta": "" }
 
-# =====================================================================
-# ADMINISTRACIÓN: dashboard
-# =====================================================================
-
-### Resumen del dashboard (conteos e ingreso estimado)
-GET {{base}}/api/admin/resumen
-
-### Bodegas con su cliente asignado
-GET {{base}}/api/admin/bodegas
-
-### Detalle de una bodega con su cliente
-GET {{base}}/api/admin/bodegas/2
-
-### Crear bodega
-POST {{base}}/api/admin/bodegas
+### Dueño: rechazar solicitud
+POST {{base}}/api/solicitudes/SOL-0002/rechazar
+Authorization: Bearer {{tokenDueno}}
 Content-Type: application/json
 
-{
-  "nombre": "Bodega Extra Grande",
-  "volumen": 20,
-  "precio": 2499,
-  "estado": "Disponible",
-  "descripcion": "Espacio amplio para mudanzas completas.",
-  "etiqueta": "Máxima capacidad",
-  "capacidad": "Contenido de una casa pequeña.",
-  "contenido": ["Muebles grandes", "Electrodomésticos", "Cajas de mudanza"],
-  "caracteristicas": ["Acceso amplio", "Área techada"]
-}
+{ "respuesta": "Por ahora no tenemos ese espacio." }
 
-### Editar bodega: marcarla como Ocupada con cliente
-PUT {{base}}/api/admin/bodegas/4
+### Contratos
+GET {{base}}/api/contratos
+Authorization: Bearer {{tokenDueno}}
+
+### Dueño: activar contrato (entrega de la bodega)
+POST {{base}}/api/contratos/CON-0004/activar
+Authorization: Bearer {{tokenDueno}}
+
+### Dueño: finalizar contrato
+POST {{base}}/api/contratos/CON-0002/finalizar
+Authorization: Bearer {{tokenDueno}}
+
+### Pagos (dueño: todos · cliente: los suyos)
+GET {{base}}/api/pagos
+Authorization: Bearer {{tokenCliente}}
+
+### Pagar (cliente dueño del pago, o dueño)
+POST {{base}}/api/pagos/PAG-0017/pagar
+Authorization: Bearer {{tokenCliente}}
 Content-Type: application/json
 
-{
-  "nombre": "Bodega Familiar",
-  "volumen": 12,
-  "precio": 1799,
-  "estado": "Ocupada",
-  "descripcion": "Más espacio para cajas, muebles y artículos de una mudanza familiar.",
-  "cliente": { "nombre": "Familia López", "telefono": "951 000 0004", "correo": "lopez@example.com" }
-}
+{ "metodo": "Tarjeta" }
 
-### Error 400: Reservada sin cliente
-PUT {{base}}/api/admin/bodegas/1
+### Dueño: editar bodega
+PATCH {{base}}/api/bodegas/BOD-001
+Authorization: Bearer {{tokenDueno}}
 Content-Type: application/json
 
-{
-  "nombre": "Bodega Mini",
-  "volumen": 3,
-  "precio": 499,
-  "estado": "Reservada",
-  "descripcion": "Sin cliente asignado"
-}
+{ "precio": 549, "estado": "Ocupada", "clienteId": "u-ana" }
 
-### Eliminar bodega (409 si tiene solicitudes)
-DELETE {{base}}/api/admin/bodegas/5
+### Dueño: clientes
+GET {{base}}/api/clientes
+Authorization: Bearer {{tokenDueno}}
 
-### Todas las solicitudes
-GET {{base}}/api/admin/solicitudes
-
-### Solicitudes pendientes
-GET {{base}}/api/admin/solicitudes?estado=Pendiente
-
-### Cambiar estado de una solicitud
-PATCH {{base}}/api/admin/solicitudes/1/estado
-Content-Type: application/json
-
-{ "estado": "Contactado" }
-
-### Eliminar solicitud
-DELETE {{base}}/api/admin/solicitudes/1
-
-### Restaurar datos de demostración
-POST {{base}}/api/admin/demo/reset
+### Dueño: restaurar datos de ejemplo
+POST {{base}}/api/demo/reiniciar
+Authorization: Bearer {{tokenDueno}}
